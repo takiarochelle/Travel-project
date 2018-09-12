@@ -47,9 +47,6 @@ class UserTrip(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     trip_id = db.Column(db.Integer, db.ForeignKey('trips.trip_id'))
 
-    # user = db.relationship('User', backref='user_trips')
-    # trip = db.relationship('Trip', backref='user_trips')
-
     def __repr__(self):
         """Display readable information about id of user and trip"""
 
