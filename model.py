@@ -30,7 +30,8 @@ class Trip(db.Model):
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
 
-    creator = db.relationship('User', secondary='user_trips', backref='trips')
+    creator = db.relationship('User', backref='created_trips')
+    travel_buddies = db.relationship('User', secondary='user_trips', backref='trips')
 
     def __repr__(self):
         """Display readable trip information"""
@@ -44,8 +45,8 @@ class UserTrip(db.Model):
     __tablename__ = 'user_trips'
 
     user_trip_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    trip_id = db.Column(db.Integer, db.ForeignKey('trips.trip_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    trip_id = db.Column(db.Integer, db.ForeignKey('trips.trip_id'), nullable=False)
 
     def __repr__(self):
         """Display readable information about id of user and trip"""

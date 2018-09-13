@@ -10,10 +10,6 @@ def load_users():
 
     print("Users")
 
-    # Delete all rows in table, so if we need to run this a second time,
-    # we won't be trying to add duplicate users
-    User.query.delete()
-
     for row in open("seed_data/u.user"):
         row = row.rstrip()
         user_id, fname, lname, email, password = row.split("|")
@@ -33,8 +29,6 @@ def load_trips():
 
     print("Trips")
 
-    Trip.query.delete()
-
     for row in open("seed_data/u.trip"):
         row = row.rstrip()
         trip_id, creator_id, trip_name, start_date, end_date = row.split("|")
@@ -47,11 +41,7 @@ def load_trips():
                     start_date=start_date,
                     end_date=end_date)
 
-        user_trip = UserTrip(trip_id=trip_id,
-                            user_id=creator_id)
-
         db.session.add(trip)
-        db.session.add(user_trip)
 
     db.session.commit()
 
@@ -60,8 +50,6 @@ def load_places():
     """Load places from u.places into database."""
 
     print("Places")
-
-    Place.query.delete()
 
     for row in open("seed_data/u.place"):
         row = row.rstrip()
@@ -77,17 +65,30 @@ def load_places():
     db.session.commit()
 
 
-# def set_val_user_id():
-#     """Set value for the next user_id after seeding database"""
+def load_user_trips():
+    """Associate users to trips from u.user_trips into database."""
 
-#     # Get the Max user_id in the database
-#     result = db.session.query(func.max(User.user_id)).one()
-#     max_id = int(result[0])
+    print("User Trips")
 
-#     # Set the value for the next user_id to be max_id + 1
-#     query = "SELECT setval('users_user_id_seq', :new_id)"
-#     db.session.execute(query, {'new_id': max_id + 1})
-#     db.session.commit()
+    for row in open("seed_data/u.user_trips"):
+        row = row.rstrip()
+        user_trip_id, user_id, trip_id = row.split("|")
+
+        user_trip = UserTrip(user_id=user_id,
+                            trip_id=trip_id)
+
+        db.session.add(user_trip)
+
+    db.session.commit()
+
+
+def del_tables():
+    """Delete data from all tables in the database to avoid adding duplicates"""
+
+    Place.query.delete()
+    Trip.query.delete()
+    UserTrip.query.delete()
+    User.query.delete()
 
 
 if __name__ == "__main__":
@@ -97,7 +98,9 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
+    del_tables()
     load_users()
     load_trips()
-    # load_places()
-    # set_val_user_id()
+    load_places()
+    load_user_trips()
+
