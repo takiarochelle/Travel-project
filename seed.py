@@ -2,13 +2,11 @@ from sqlalchemy import func
 from model import *
 from server import app
 from sqlalchemy import func
-import datetime
+from datetime import datetime
 
 
 def load_users():
     """Load users from u.user into database."""
-
-    print("Users")
 
     for row in open("seed_data/u.user"):
         row = row.rstrip()
@@ -27,14 +25,12 @@ def load_users():
 def load_trips():
     """Load trips from u.trips into database."""
 
-    print("Trips")
-
     for row in open("seed_data/u.trip"):
         row = row.rstrip()
         trip_id, creator_id, trip_name, start_date, end_date = row.split("|")
 
-        start_date = datetime.datetime.strptime(start_date, "%d-%B-%Y")
-        end_date = datetime.datetime.strptime(end_date, "%d-%B-%Y")
+        start_date = datetime.strptime(start_date, "%d-%B-%Y")
+        end_date = datetime.strptime(end_date, "%d-%B-%Y")
 
         trip = Trip(creator_id=creator_id,
                     trip_name=trip_name,
@@ -48,8 +44,6 @@ def load_trips():
 
 def load_places():
     """Load places from u.places into database."""
-
-    print("Places")
 
     for row in open("seed_data/u.place"):
         row = row.rstrip()
@@ -68,8 +62,6 @@ def load_places():
 def load_user_trips():
     """Associate users to trips from u.user_trips into database."""
 
-    print("User Trips")
-
     for row in open("seed_data/u.user_trips"):
         row = row.rstrip()
         user_trip_id, user_id, trip_id = row.split("|")
@@ -82,13 +74,13 @@ def load_user_trips():
     db.session.commit()
 
 
-def del_tables():
+def del_data_in_tables():
     """Delete data from all tables in the database to avoid adding duplicates"""
 
     Place.query.delete()
     Trip.query.delete()
-    UserTrip.query.delete()
     User.query.delete()
+    UserTrip.query.delete()
 
 
 if __name__ == "__main__":
@@ -97,8 +89,7 @@ if __name__ == "__main__":
     # In case tables haven't been created, create them
     db.create_all()
 
-    # Import different types of data
-    del_tables()
+    # del_data_in_tables()
     load_users()
     load_trips()
     load_places()

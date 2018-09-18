@@ -13,10 +13,12 @@ class User(db.Model):
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(12), nullable=False)
 
+
     def __repr__(self):
         """Display readable user information"""
 
-        return f'<User: user_id: {self.user_id}, name: {self.fname} {self.lname}, email: {self.email}>'
+        return f'<User: user_id {self.user_id}, name {self.fname} {self.lname}, email {self.email}>'
+
 
 
 class Trip(db.Model):
@@ -33,10 +35,12 @@ class Trip(db.Model):
     creator = db.relationship('User', backref='created_trips')
     travel_buddies = db.relationship('User', secondary='user_trips', backref='trips')
 
+
     def __repr__(self):
         """Display readable trip information"""
 
-        return f'<Trip: trip_id: {self.trip_id}, name: {self.trip_name}, creator: {self.creator_id}, duration: {self.start_date} - {self.end_date}>'
+        return f'<Trip: trip_id {self.trip_id}, name {self.trip_name}, creator {self.creator_id}, duration {self.start_date} - {self.end_date}>'
+
 
 
 class UserTrip(db.Model):
@@ -48,10 +52,12 @@ class UserTrip(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     trip_id = db.Column(db.Integer, db.ForeignKey('trips.trip_id'), nullable=False)
 
+
     def __repr__(self):
         """Display readable information about id of user and trip"""
 
-        return f'<UserTrip: user_trip_id: {self.user_trip_id}, user_id: {self.user_id}, trip_id: {self.trip_id}>'
+        return f'<UserTrip: user_trip_id {self.user_trip_id}, user_id {self.user_id}, trip_id {self.trip_id}>'
+
 
 
 class Place(db.Model):
@@ -68,10 +74,12 @@ class Place(db.Model):
     user = db.relationship('User', backref='places')
     trip = db.relationship('Trip', backref='places')
 
+
     def __repr__(self):
         """Display readable information about the place"""
 
-        return f'<Place: place_id: {self.place_id}, place_name: {self.place_name},  user: {self.user_id}, trip: {self.trip_id}, comment: {self.comment}>'
+        return f'<Place: place_id {self.place_id}, place_name {self.place_name},  user {self.user_id}, trip: {self.trip_id}, comment {self.comment}>'
+
 
 
 def connect_to_db(app, db_name):
