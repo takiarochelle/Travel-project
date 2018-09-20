@@ -12,7 +12,6 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
-
 @app.route('/')
 def index():
     """Display homepage"""
@@ -73,7 +72,6 @@ def validate_new_user():
         return redirect('/register')
 
     else:
-        print(f'THIS IS WHAT IS IN SESSION {session}!!!!!!!!')
         flash('Successfully registered!')
         new_user = User(fname=fname,
                         lname=lname,
@@ -88,12 +86,18 @@ def validate_new_user():
     return redirect(url_for('user_profile'))
 
 
-
 @app.route('/profile')
 def user_profile():
     """Display user's profile page"""
 
-    return render_template('profile.html')
+    # YOUR_API_KEY = os.environ['YOUR_API_KEY']
+    email = session.get('email')
+    user = User.query.filter_by(email=email).first()
+    user_fname = user.fname
+    created_trips = user.created_trips
+    other_trips = user.trips
+
+    return render_template('profile.html', fname=user_fname, created_trips=created_trips, other_trips=other_trips)
 
 
 @app.route('/trip_name_page')
