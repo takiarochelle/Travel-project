@@ -90,7 +90,6 @@ def validate_new_user():
 def user_profile():
     """Display user's profile page"""
 
-    # YOUR_API_KEY = os.environ['YOUR_API_KEY']
     email = session.get('email')
     user = User.query.filter_by(email=email).first()
     user_fname = user.fname
