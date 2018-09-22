@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Trip</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+<body>
+
+    <form action="/validate-trip" method="post">
+        Trip name <br>
+        <input type="text" name="trip-name">
+        <br>
+        Start date <br>
+        <input type="text" name="start-date" placeholder="ex. 12-October-2018">
+        <br>
+        End date <br>
+        <input type="text" name="end-date" placeholder="ex. 12-October-2018">
+        <br>
+        <span class="modal-Btns">
+            <input type="submit" name="Submit">
+        </span>
+    </form>
+    <button onclick="redirectProfile()">Close</button>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+
+        function redirectProfile() {
+
+            window.history.back();
+
+        }
+
+    </script>
+    
+</body>
+</html>

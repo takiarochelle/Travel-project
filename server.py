@@ -1,5 +1,5 @@
 import os
-from flask import Flask, redirect, request, render_template, session, url_for, flash
+from flask import Flask, redirect, request, render_template, session, url_for, flash, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import User, Trip, Place, UserTrip, connect_to_db, db
@@ -99,9 +99,37 @@ def user_profile():
     return render_template('profile.html', fname=user_fname, created_trips=created_trips, other_trips=other_trips)
 
 
-@app.route('/trip_name_page')
+@app.route('/trip-name-page')
 def trip_itinerary():
     pass
+
+
+@app.route('/add-trip')
+def add_trip():
+    """Add trip to users list of trips in the database"""
+
+    return render_template('add_trip.html')
+
+
+@app.route('/validate-trip', methods=['POST'])
+def validate_trip():
+
+    user = User.query.filter_by(email=session['email']).first()
+
+    trip_name = request.form.get('trip-name')
+    start_date = request.form.get('start-date')
+    end_date = request.form.get('end-date')
+
+    new_trip = Trip(creator_id=user.user_id,
+                    trip_name=trip_name,
+                    start_date=start_date,
+                    end_date=end_date)
+
+    db.session.add(new_trip)
+
+    db.session.commit()
+
+    return redirect(url_for('user_profile')) # Want this to go to trip page
 
 
 if __name__ == "__main__":

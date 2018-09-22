@@ -7,25 +7,34 @@
     <h1>Welcome {{ fname }}!</h1>
 
     <h2>Upcoming Trips</h2>
-    <div class="created-trips">
+    <div class="user-trips">
         <h3>Created Trips</h3>  
-        <div class="list-group">
+        <div id="created-trips">
             {% for trip in created_trips %}
-                <a href="#" class="list-group-item list-group-item-action active">{{ trip }}</a>
+                <a href="#" class="list-group-item list-group-item-action active">{{ trip.trip_name }}</a>
             {% endfor %}
         </div>
-        <button class="add-trip">Create a new trip!</button>
-    </div>
-    <div class="other-trips">
-        <h3>Other Trips</h3>
-        <ul>
-            {% for trip in other_trips %}
-                <li>{{ trip }}</li>
-            {% endfor %}
-        </ul>
+        <div class="other-trips">
+            <h3>Other Trips</h3>
+            <ul>
+                {% for trip in other_trips %}
+                    <li>{{ trip }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <button id="add-trip" onclick="redirect()">Create a new trip!</button>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+
+        function redirect() {
+
+            window.location.assign('/add-trip');
+
+        }
+
+    </script>
 
 
 <!-- 
