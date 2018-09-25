@@ -6,27 +6,37 @@
 
     <h1>Welcome {{ fname }}!</h1>
 
+    <div id="profile-pic">
+        <img src="{{ profile_image }}">
+    </div>
+
     <h2>Upcoming Trips</h2>
-    <div class="user-trips">
-        <h3>Created Trips</h3>  
-        <div id="created-trips">
-            {% for trip in created_trips %}
-                <a href="#" class="list-group-item list-group-item-action active">{{ trip.trip_name }}</a>
-            {% endfor %}
-        </div>
+
+    <div class="list-group">
+        {% for trip in created_trips %}
+          <a href="/{{ trip.trip_name }}_{{ trip.trip_id }}" class="list-group-item list-group-item-action">
+            {{ trip.trip_name }}
+            ({{ trip.start_date }} - {{ trip.end_date }})
+          </a>
+        {% endfor %}
+    </div>
+
         <div class="other-trips">
             <h3>Other Trips</h3>
             <ul>
                 {% for trip in other_trips %}
-                    <li>{{ trip }}</li>
+                    <li>{{ trip.trip_name }}</li>
                 {% endfor %}
             </ul>
         </div>
         <button id="add-trip" onclick="redirect()">Create a new trip!</button>
     </div>
 
+
+
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script type="text/javascript">
+        'use strict';
 
         function redirect() {
 
@@ -35,19 +45,5 @@
         }
 
     </script>
-
-
-<!-- 
-<div id="map"></div>
-<script>
-    var map;
-    function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: -34.397, lng: 150.644},
-      zoom: 8
-    });
-    }
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script> --> 
 
 {% endblock %}

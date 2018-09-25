@@ -28,5 +28,25 @@
         <span class="sr-only">Next</span>
       </a>
     </div>
+    <br>
+    <span>
+        <button onclick="goToLogin()">Login</button>
+        or
+        <button onclick="goToRegister()">Register</button>
+    </span>
+
+    <script type="text/javascript">
+        'use strict';
+
+        function goToLogin() {
+            window.location.assign('/login');
+        }
+
+        function goToRegister() {
+            window.location.assign('/register');
+        }
+
+    </script>
 
 {% endblock %}
+

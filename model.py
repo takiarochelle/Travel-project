@@ -10,8 +10,10 @@ class User(db.Model):
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     fname = db.Column(db.String(50), nullable=False)
     lname = db.Column(db.String(50), nullable=False)
+    username = db.Column(db.String(12), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(12), nullable=False)
+    image_file = db.Column(db.String(60), nullable=False, default='default.jpg')
 
 
     def __repr__(self):

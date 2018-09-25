@@ -3,7 +3,8 @@ from flask import Flask, redirect, request, render_template, session, url_for, f
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import User, Trip, Place, UserTrip, connect_to_db, db
-
+from datetime import datetime
+import config
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
@@ -11,6 +12,7 @@ app.jinja_env.auto_reload = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+YOUR_API_KEY = config.YOUR_API_KEY
 
 @app.route('/')
 def index():
@@ -37,7 +39,7 @@ def validate_login():
 
     if valid_user:
         session['email'] = email
-        return redirect(url_for('user_profile'))
+        return redirect(url_for('user_profile', username=valid_user.username))
     else:
         flash('Email or password is incorrect')
         return redirect(url_for('login'))
@@ -60,15 +62,17 @@ def validate_new_user():
     password = request.form.get('reg-password')
     confirm_email = request.form.get('confirm-email')
     confirm_password = request.form.get('confirm-password')
+    username = request.form.get('reg-username')
 
-    user = User.query.filter_by(email=email).first()
+    user_by_email = User.query.filter_by(email=email).first()
+    user_by_username = User.query.filter_by(username=username).first()
 
     if email != confirm_email or password != confirm_password:
         flash('Email or password do not match')
         return redirect('/register')
 
-    elif user:
-        flash('Email is already taken')
+    elif user_by_email or user_by_username:
+        flash('Email or username is already taken')
         return redirect('/register')
 
     else:
@@ -76,18 +80,19 @@ def validate_new_user():
         new_user = User(fname=fname,
                         lname=lname,
                         email=email,
-                        password=password)
+                        password=password,
+                        username=username)
 
         db.session.add(new_user)
         db.session.commit()
 
     session['email'] = email
 
-    return redirect(url_for('user_profile'))
+    return redirect(url_for('user_profile', username=username))
 
 
-@app.route('/profile')
-def user_profile():
+@app.route('/profile/<username>')
+def user_profile(username):
     """Display user's profile page"""
 
     email = session.get('email')
@@ -95,13 +100,29 @@ def user_profile():
     user_fname = user.fname
     created_trips = user.created_trips
     other_trips = user.trips
+    profile_image = user.image_file
 
-    return render_template('profile.html', fname=user_fname, created_trips=created_trips, other_trips=other_trips)
+    return render_template('profile.html', 
+                            fname=user_fname, 
+                            created_trips=created_trips, 
+                            other_trips=other_trips, 
+                            username=username,
+                            profile_image=profile_image)
 
 
-@app.route('/trip-name-page')
-def trip_itinerary():
-    pass
+@app.route('/<trip_name>_<trip_id>')
+def trip_itinerary(trip_name, trip_id):
+    
+    email = session.get('email')
+    user = User.query.filter_by(email=email).first()
+    trip = Trip.query.filter_by(trip_id=trip_id).first()
+
+    return render_template('itinerary.html', 
+                            YOUR_API_KEY,
+                            trip_name=trip_name, 
+                            trip_id=trip_id,
+                            start_date=trip.start_date,
+                            end_date=trip.end_date)
 
 
 @app.route('/add-trip')
@@ -120,6 +141,9 @@ def validate_trip():
     start_date = request.form.get('start-date')
     end_date = request.form.get('end-date')
 
+    start_date = datetime.strptime(start_date, "%m/%d/%Y")
+    end_date = datetime.strptime(end_date, "%m/%d/%Y")
+
     new_trip = Trip(creator_id=user.user_id,
                     trip_name=trip_name,
                     start_date=start_date,
@@ -129,8 +153,12 @@ def validate_trip():
 
     db.session.commit()
 
-    return redirect(url_for('user_profile')) # Want this to go to trip page
-
+    return redirect(url_for('itinerary.html',
+                            YOUR_API_KEY,
+                            trip_id=new_trip.trip_id,
+                            trip_name=trip_name, 
+                            start_date=start_date,
+                            end_date=end_date))
 
 if __name__ == "__main__":
     app.debug = True
