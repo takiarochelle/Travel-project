@@ -1,33 +1,101 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<nav class="navbar navbar-light bg-light" style="background-color: #e3f2fd;">
-    <span>
-        <button>Profile</button>
-        <button>Logout</button>
-    </span>
-    <form class="form-inline">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Places</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End of Modal -->
+
+    <nav class="navbar" style="background-color: rgb(140, 208, 238);">
+
+        <span>
+            <button onclick="redirectProfile()">Profile</button>
+            <button>Edit Profile</button>
+        </span>
+        <button onclick="redirectLogout()">Logout</button>
+
+    </nav>
+
+    <h1>{{ trip_name }}</h1>
+
+    <h5>({{ start_date }}) - ({{ end_date }})</h5>
+
+    <form action="/{{ trip_name }}-{{ trip_id }}">
+        <input id="pac-input" class="controls" type="search" name="place-name" placeholder="Search..." size="35">
+        <button type="submit">Add Place</button>
     </form>
-</nav>
+    <br>
+    
+    <div class="container">
 
-<h1>{{ trip_name }}</h1>
+        <div class="row">
+            <!-- GOOGLE MAP -->
+            <div id="map" class="col-8"></div>
+            <!-- END OF GOOGLE MAP -->
 
-<h5>({{ start_date }}) - ({{ end_date }})</h5>
+            <div id="list-of-places" class="col-4">
+                <h3>List of Places</h3>
+                <ol>
+                    {% for place in places %}
+                        <li>
+                            {{ place.place_name }}
+                            {{ place.comment }}
+                        </li>
+                    {% endfor %}
+                </ol>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                  Edit Places
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <br>
+    <div id="travel-friends">
+        <h6>Travel Buddies:</h6>
+        <span>
+            <span>
+            {% for buddy in travel_buddies %}
+                {{ buddy.image_file }}
+                {{ buddy.fname }}<br>{{ buddy.lname }}
+            {% endfor %}
+            </span>
+        </span>
+        <button>Add Friends</button>
+    </div>
 
+    <script type="text/javascript">
 
-<div id="map"></div>
-<script>
-    var map;
-    function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: -34.397, lng: 150.644},
-      zoom: 8
-    });
-    }
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ YOUR_API_KEY }}&callback=initMap" async defer></script> 
+        function redirectProfile() {
+            window.location.assign('/profile/<username>');
+        }
+
+        function redirectLogout() {
+            window.location.assign('/logout');
+        }
+
+    </script>
+    <script src="static/main.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initAutocomplete" async defer></script> 
 
 
 {% endblock %}

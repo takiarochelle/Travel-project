@@ -3,44 +3,52 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
+    <nav class="navbar" style="background-color: rgb(140, 208, 238);">
+        <button onclick="logout()">Logout</button>
+    </nav>
 
     <h1>Welcome {{ fname }}!</h1>
 
     <div id="profile-pic">
-        <img src="{{ profile_image }}">
+<!--         <form enctype="multipart/form-data" action="/my_submit" method="POST">
+            <input type="file" name="my_photo" accept="image/*">
+        </form> -->
     </div>
 
     <h2>Upcoming Trips</h2>
 
     <div class="list-group">
         {% for trip in created_trips %}
-          <a href="/{{ trip.trip_name }}_{{ trip.trip_id }}" class="list-group-item list-group-item-action">
+          <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
+            {{ trip.trip_name }}
+            ({{ trip.start_date }} - {{ trip.end_date }})
+          </a>
+        {% endfor %}
+
+        {% for trip in other_trips %}
+          <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
             {{ trip.trip_name }}
             ({{ trip.start_date }} - {{ trip.end_date }})
           </a>
         {% endfor %}
     </div>
 
-        <div class="other-trips">
-            <h3>Other Trips</h3>
-            <ul>
-                {% for trip in other_trips %}
-                    <li>{{ trip.trip_name }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        <button id="add-trip" onclick="redirect()">Create a new trip!</button>
-    </div>
+    <button id="add-trip" onclick="redirect()">Create a new trip!</button>
 
 
-
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
     <script type="text/javascript">
         'use strict';
 
         function redirect() {
 
             window.location.assign('/add-trip');
+
+        }
+
+        function logout () {
+
+            window.location.assign('/logout');
 
         }
 

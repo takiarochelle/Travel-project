@@ -3,7 +3,6 @@ from flask import Flask, redirect, request, render_template, session, url_for, f
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import User, Trip, Place, UserTrip, connect_to_db, db
-from datetime import datetime
 import config
 
 app = Flask(__name__)
@@ -13,6 +12,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 YOUR_API_KEY = config.YOUR_API_KEY
+
 
 @app.route('/')
 def index():
@@ -40,6 +40,7 @@ def validate_login():
     if valid_user:
         session['email'] = email
         return redirect(url_for('user_profile', username=valid_user.username))
+
     else:
         flash('Email or password is incorrect')
         return redirect(url_for('login'))
@@ -102,7 +103,7 @@ def user_profile(username):
     other_trips = user.trips
     profile_image = user.image_file
 
-    return render_template('profile.html', 
+    return render_template('profile.html',
                             fname=user_fname, 
                             created_trips=created_trips, 
                             other_trips=other_trips, 
@@ -110,19 +111,25 @@ def user_profile(username):
                             profile_image=profile_image)
 
 
-@app.route('/<trip_name>_<trip_id>')
-def trip_itinerary(trip_name, trip_id):
-    
-    email = session.get('email')
-    user = User.query.filter_by(email=email).first()
-    trip = Trip.query.filter_by(trip_id=trip_id).first()
+# @app.route('/my_submit', methods=['POST'])
+# def handle_submit():
+#     """Save profile image"""
 
-    return render_template('itinerary.html', 
-                            YOUR_API_KEY,
-                            trip_name=trip_name, 
-                            trip_id=trip_id,
-                            start_date=trip.start_date,
-                            end_date=trip.end_date)
+#     f = request.files['my_photo']
+#     filename = f.save('static/' + f.filename)
+
+#     email = session.get('email')
+#     user = User.query.filter_by(email=email).first()
+
+#     user.image_file = filename
+
+#     db.session.commit()
+
+#     return redirect(url_for('user_profile', 
+#                             fname=user.fname, 
+#                             created_trips=user.created_trips, 
+#                             other_trips=user.trips, 
+#                             profile_image=user.image_file))
 
 
 @app.route('/add-trip')
@@ -141,8 +148,8 @@ def validate_trip():
     start_date = request.form.get('start-date')
     end_date = request.form.get('end-date')
 
-    start_date = datetime.strptime(start_date, "%m/%d/%Y")
-    end_date = datetime.strptime(end_date, "%m/%d/%Y")
+    start_date = Trip.convert_date_format(start_date)
+    end_date = Trip.convert_date_format(end_date)
 
     new_trip = Trip(creator_id=user.user_id,
                     trip_name=trip_name,
@@ -153,12 +160,58 @@ def validate_trip():
 
     db.session.commit()
 
-    return redirect(url_for('itinerary.html',
-                            YOUR_API_KEY,
+    places = new_trip.places
+    travel_buddies = new_trip.travel_buddies
+
+    return redirect(url_for('trip_itinerary',
+                            YOUR_API_KEY=YOUR_API_KEY,
                             trip_id=new_trip.trip_id,
                             trip_name=trip_name, 
                             start_date=start_date,
-                            end_date=end_date))
+                            end_date=end_date,
+                            places=places,
+                            travel_buddies=travel_buddies))
+
+
+@app.route('/<trip_name>-<trip_id>')
+def trip_itinerary(trip_name, trip_id):
+    
+    email = session.get('email')
+    place = request.args.get('place-name')
+    user = User.query.filter_by(email=email).first()
+    trip = Trip.query.filter_by(trip_id=trip_id).first()
+    place_exist = Place.query.filter_by(trip_id=trip_id, place_name=place).first()
+
+    if place and place_exist == None:
+        new_place = Place(trip_id=trip_id,
+                        user_id=user.user_id,
+                        place_name=place)
+
+        db.session.add(new_place)
+        db.session.commit()
+
+    places = trip.places
+    travel_buddies = trip.travel_buddies
+
+    return render_template('itinerary.html',
+                            YOUR_API_KEY=YOUR_API_KEY, 
+                            trip_name=trip_name, 
+                            trip_id=trip_id,
+                            start_date=trip.start_date,
+                            end_date=trip.end_date,
+                            places=places,
+                            travel_buddies=travel_buddies)
+
+
+
+@app.route('/logout')
+def logout():
+    """Display logout page"""
+
+    session.clear()
+
+    return render_template('logout.html')
+
 
 if __name__ == "__main__":
     app.debug = True

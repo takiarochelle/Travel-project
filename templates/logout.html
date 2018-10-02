@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Goodbye!</h1>
+
+<button id="login-again" onclick="redirect()">Login</button>
+
+<script type="text/javascript">
+    'use strict';
+
+    function redirect() {
+
+        window.location.assign('/login');
+
+    }
+</script>
+
+{% endblock %}
