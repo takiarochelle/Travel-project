@@ -164,7 +164,7 @@ def validate_trip():
     travel_buddies = new_trip.travel_buddies
 
     return redirect(url_for('trip_itinerary',
-                            YOUR_API_KEY=YOUR_API_KEY,
+                            # YOUR_API_KEY=YOUR_API_KEY,
                             trip_id=new_trip.trip_id,
                             trip_name=trip_name, 
                             start_date=start_date,
@@ -194,7 +194,7 @@ def trip_itinerary(trip_name, trip_id):
     travel_buddies = trip.travel_buddies
 
     return render_template('itinerary.html',
-                            YOUR_API_KEY=YOUR_API_KEY, 
+                            # YOUR_API_KEY=YOUR_API_KEY, 
                             trip_name=trip_name, 
                             trip_id=trip_id,
                             start_date=trip.start_date,
