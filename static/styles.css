@@ -1,11 +1,14 @@
 body {
     text-align: center;
+/*    background-image: url(https://www.touropia.com/gfx/b/2016/09/Street.jpg);*/
+    background-color: rgba(90, 108, 127, 0.8);
 }
 
-/*.page-wrap {
+.page-wrap {
     width: 960px;
-    margin: 0 auto; 
-}*/
+    margin-left: auto; 
+    margin-right: auto;
+}
 /*#carousel {
     height: 300px;
     width: 300px;
@@ -36,7 +39,7 @@ body {
     width: 100%;
 }*/
 
-/*#description {
+#description {
     font-family: Roboto;
     font-size: 15px;
     font-weight: 300;
@@ -107,7 +110,7 @@ body {
 #target {
     width: 345px;
 }
-*/
+
 
 #list-of-places {
     display: inline-block;

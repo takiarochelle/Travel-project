@@ -2,6 +2,16 @@
 
 {% block content %}
 
+    <nav class="navbar" style="background-color: rgb(140, 208, 238);">
+
+        <span>
+            <button onclick="redirectProfile()">Profile</button>
+            <button>Edit Profile</button>
+        </span>
+        <button onclick="redirectLogout()">Logout</button>
+
+    </nav>
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -13,37 +23,39 @@
             </button>
           </div>
           <div class="modal-body">
-            ...
+            <form action="/delete-places">
+                <ol>
+                    {% for place in trip.places %}
+                    <li>
+                        <span>
+                            {{ place.place_name }}
+                            <input type="checkbox" id="{{place.place_id}}" class="place-list">
+                        </span>
+                    </li>
+                    <br>
+                    {% endfor %}
+                </ol>
+            <form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" id="save-delete-places" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
     </div>
     <!--End of Modal -->
 
-    <nav class="navbar" style="background-color: rgb(140, 208, 238);">
+    <h1>{{ trip.trip_name }}</h1>
 
-        <span>
-            <button onclick="redirectProfile()">Profile</button>
-            <button>Edit Profile</button>
-        </span>
-        <button onclick="redirectLogout()">Logout</button>
-
-    </nav>
-
-    <h1>{{ trip_name }}</h1>
-
-    <h5>({{ start_date }}) - ({{ end_date }})</h5>
+    <h5>({{ trip.start_date }}) - ({{ trip.end_date }})</h5>
 
     <form action="/{{ trip_name }}-{{ trip_id }}">
-        <input id="pac-input" class="controls" type="search" name="place-name" placeholder="Search..." size="35">
+<!--         <input id="pac-input" class="controls" type="search" name="place-name" placeholder="Search..." size="35"> -->
+        <input id="pac-input" class="controls" type="text" placeholder="Search Box" name="place-name" size="35">
         <button type="submit">Add Place</button>
     </form>
     <br>
-    
     <div class="container">
 
         <div class="row">
@@ -54,10 +66,9 @@
             <div id="list-of-places" class="col-4">
                 <h3>List of Places</h3>
                 <ol>
-                    {% for place in places %}
+                    {% for place in trip.places %}
                         <li>
                             {{ place.place_name }}
-                            {{ place.comment }}
                         </li>
                     {% endfor %}
                 </ol>
@@ -74,7 +85,7 @@
         <h6>Travel Buddies:</h6>
         <span>
             <span>
-            {% for buddy in travel_buddies %}
+            {% for buddy in trip.travel_buddies %}
                 {{ buddy.image_file }}
                 {{ buddy.fname }}<br>{{ buddy.lname }}
             {% endfor %}
@@ -84,9 +95,11 @@
     </div>
 
     <script type="text/javascript">
+        'use strict';
+
 
         function redirectProfile() {
-            window.location.assign('/profile/<username>');
+            window.location.assign('/profile/{{ username }}');
         }
 
         function redirectLogout() {
@@ -95,7 +108,7 @@
 
     </script>
     <script src="static/main.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initAutocomplete" async defer></script> 
+    <script src="https://maps.googleapis.com/maps/api/js?key=MY_API_KEY&libraries=places&callback=initMap" async defer></script> 
 
 
 {% endblock %}

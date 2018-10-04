@@ -7,7 +7,7 @@
         <button onclick="logout()">Logout</button>
     </nav>
 
-    <h1>Welcome {{ fname }}!</h1>
+    <h1>Welcome {{ user.fname }}!</h1>
 
     <div id="profile-pic">
 <!--         <form enctype="multipart/form-data" action="/my_submit" method="POST">
@@ -15,24 +15,24 @@
         </form> -->
     </div>
 
-    <h2>Upcoming Trips</h2>
+    <h5>Upcoming Trips</h5>
 
-    <div class="list-group">
-        {% for trip in created_trips %}
+    <div class="list-group col-4"">
+        {% for trip in user.created_trips %}
           <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
             {{ trip.trip_name }}
             ({{ trip.start_date }} - {{ trip.end_date }})
           </a>
         {% endfor %}
 
-        {% for trip in other_trips %}
+        {% for trip in user.trips %}
           <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
             {{ trip.trip_name }}
             ({{ trip.start_date }} - {{ trip.end_date }})
           </a>
         {% endfor %}
     </div>
-
+    <br>
     <button id="add-trip" onclick="redirect()">Create a new trip!</button>
 
 
