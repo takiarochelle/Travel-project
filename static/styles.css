@@ -1,18 +1,57 @@
-body {
-    text-align: center;
-/*    background-image: url(https://www.touropia.com/gfx/b/2016/09/Street.jpg);*/
-    background-color: rgba(90, 108, 127, 0.8);
+#login-body {
+    background-image: url(https://www.hertzpageo.com/img/!kath/Edinburgh_Quick_1.jpg);
+    background-repeat: repeat-x;
+    background-size: 100% 400px;
+    background-position: center;
 }
 
-.page-wrap {
+body {
+    text-align: center;
+    background-color: rgba(158, 190, 204);
+}
+
+.navbar {
+    background-color: rgba(52, 58, 64, 0.5);
+}
+
+.list-group a {
+    text-align: center;
+}
+
+#upload-image span {
+    text-align: center;
+}
+
+/*.page-wrap {
     width: 960px;
     margin-left: auto; 
     margin-right: auto;
-}
-/*#carousel {
+}*/
+.center-login {
     height: 300px;
     width: 300px;
-}*/
+    margin: 20% auto;
+}
+
+.center-text {
+    text-align: center;
+    vertical-align: middle;
+    line-height: 60px;
+}
+
+.carousel-caption > h1 {
+    color: white;
+}
+
+h1, span, #list-of-places {
+    color: black;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.carousel-inner > .carousel-item > img {
+    height: 400px;
+    width: 100%;
+}
 
 #list-group {
     display: inline-block;
@@ -20,10 +59,16 @@ body {
     width: 30%;
 }
 
+#profile-pic {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+}
+
 #map {
     display: inline-block;
-    height: 600px;
-    width: 600px;
+    height: 500px;
+    width: 500px;
     padding: 20px;
 }
 
@@ -31,13 +76,6 @@ body {
     height: 200px;
     width: 200px;
 }
-
-/*#carouselExampleControls {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-}*/
 
 #description {
     font-family: Roboto;
@@ -114,6 +152,7 @@ body {
 
 #list-of-places {
     display: inline-block;
+    text-align: left;
 }
 
 

@@ -3,7 +3,7 @@
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
-		<nav class="navbar" style="background-color: rgba(140, 208, 238, 0.5);">
+		<nav class="navbar">
 				<span>
 						<button onclick="goToLogin()">Login</button>
 						<button onclick="goToRegister()">Register</button>
@@ -11,12 +11,14 @@
 		</nav>
 
 		<h1>Welcome to Travel Planner!</h1>
-		<p>The place to plan trips with your friends!</p>
+		<span>The place to plan trips with your friends!</span>
+		<br>
 
 		<!-- Carousel -->
-		<div class="container">
-			<div class="row">
-					<div class="col-sm-12">
+		<div>
+			<div>
+					<!-- <div class="col-sm-12"> -->
+					<div>
 							<div id="my-carousel" class="carousel slide" data-ride="carousel">
 									
 									<!-- indicators dot nov -->
@@ -24,26 +26,33 @@
 										<li data-target="#my-carousel" data-slide-to="0" class="active"></li>
 										<li data-target="#my-carousel" data-slide-to="1"></li>
 										<li data-target="#my-carousel" data-slide-to="2"></li>
+										<li data-target="#my-carousel" data-slide-to="3"></li>
 									</ol>
 
 									<!-- wrapper for slides -->
 									<div class="carousel-inner" role="listbox">
 										<div class="carousel-item active">
-												<img class="d-block w-100" src="http://travelzom.com/wp-content/uploads/2018/01/the-amalfi-coast-italy.jpg" alt="amalfi-coast">
+												<img class="d-block w-100" src="https://d3hne3c382ip58.cloudfront.net/files/uploads/bookmundi/resized/countrybanner/travelling-in-iceland-tours-and-trips-in-iceland-1503904176-1920X700.jpg" alt="iceland">
 												<div class="carousel-caption d-none d-md-block">
-													<h1>Amalfi Coast</h1>
+													<h1>Iceland</h1>
 												</div>
 										</div>
 										<div class="carousel-item">
-												<img class="d-block w-100" src="http://hamdenregionalchamber.com/wp-content/uploads/2018/01/Greece-1080x675.jpg" alt="santorini">
+												<img class="d-block w-100" src="https://www.simplepastimes.com/prod_images_blowup/628136653008.jpg" alt="santorini">
 												<div class="carousel-caption d-none d-md-block">
 													<h1>Santorini</h1>
 												</div>
 										</div>
 										<div class="carousel-item">
-												<img class="d-block w-100" src="https://cdn.thecrazytourist.com/wp-content/uploads/2017/09/ccimage-shutterstock_412496293.jpg" alt="san-francisco">
+												<img class="d-block w-100" src="https://avpuploads.s3.amazonaws.com/uploads/New-York-Skyline-Big-Bus-Tours-Jan-2018.jpg">
 												<div class="carousel-caption d-none d-md-block">
-													<h1>San Francisco</h1>
+													<h1>New York</h1>
+												</div>
+										</div>
+										<div class="carousel-item">
+												<img class="d-block w-100" src="https://www.aeroflot.ru/media/aflfiles/gb/lon/lon_5.jpg">
+												<div class="carousel-caption d-none d-md-block">
+													<h1>London</h1>
 												</div>
 										</div>
 									</div>
@@ -65,8 +74,9 @@
 
 		<br>
 
-
+		
 		{% block script %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 		<script>
 				'use strict';
 
@@ -82,4 +92,3 @@
 		{% endblock %}
 
 {% endblock %}
-

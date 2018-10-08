@@ -3,42 +3,111 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-    <nav class="navbar" style="background-color: rgb(140, 208, 238);">
+
+    <nav class="navbar">
+        <button onclick="homepage()">Home</button>
         <button onclick="logout()">Logout</button>
     </nav>
-
-    <h1>Welcome {{ user.fname }}!</h1>
-
-    <div id="profile-pic">
-<!--         <form enctype="multipart/form-data" action="/my_submit" method="POST">
-            <input type="file" name="my_photo" accept="image/*">
-        </form> -->
-    </div>
-
-    <h5>Upcoming Trips</h5>
-
-    <div class="list-group col-4"">
-        {% for trip in user.created_trips %}
-          <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
-            {{ trip.trip_name }}
-            ({{ trip.start_date }} - {{ trip.end_date }})
-          </a>
-        {% endfor %}
-
-        {% for trip in user.trips %}
-          <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
-            {{ trip.trip_name }}
-            ({{ trip.start_date }} - {{ trip.end_date }})
-          </a>
-        {% endfor %}
-    </div>
     <br>
-    <button id="add-trip" onclick="redirect()">Create a new trip!</button>
+    <h1>Welcome, {{ user.fname }}</h1>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div id="profile-pic" class="col-6">
+                <img src="../{{ user.image_file }}" id="profile-image" height="200" width="280">
+<!--                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#profile-pic-modal">Update Image
+                </button> -->
+                <br>
+
+                <form id="upload-image" enctype="multipart/form-data" action="/my_submit" method="post">
+                    <br>
+                    <span>
+                        <input type="file" name="my_photo" accept="image/*">
+                        <br>
+                        <input type="submit" id="submit-image" value="Upload">
+                    </span>
+                </form>
+            </div>
 
 
-    <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+
+            <div class="col-6 trip-list">
+                <h5>Upcoming Trips</h5>
+
+                <div class="list-group">
+                    {% for trip in user.created_trips %}
+                      <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
+                        {{ trip.trip_name }}
+                        ({{ trip.start_date.strftime('%d-%b-%Y') }} - {{ trip.end_date.strftime('%d-%b-%Y') }})
+                      </a>
+                    {% endfor %}
+
+                    {% for trip in user.trips %}
+                      <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
+                        {{ trip.trip_name }}
+                        ({{ trip.start_date.strftime('%d-%b-%Y') }} - {{ trip.end_date.strftime('%d-%b-%Y') }})
+                      </a>
+                    {% endfor %}
+                </div>
+                <br>
+                <button id="add-trip" onclick="redirect()">Add Trip</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    
+<!--     <div class="modal fade" id="profile-pic-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Profile Picture</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form enctype="multipart/form-data" action="/my_submit" method="post">
+                <input type="file" name="my_photo" accept="image/*">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" id="submit-image" class="btn btn-primary" data-dismiss="modal">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    
+    <!--End of Modal -->
+
+{% endblock %}
+    
+{% block script %}
+
     <script type="text/javascript">
         'use strict';
+        /* Get image uploaded by user and display on profile page */
+
+        function displayImage(result) {
+
+            $('#profile-image').attr('src', result);
+
+        }
+
+
+        function getImage() {
+            
+            // let formData = {'my_photo': $('input[type=file]').val()};
+            $.post('/my_submit', displayImage);
+            // evt.preventDefault();
+        }
+
+
+        $('#submit-image').on('click', getImage);
+
+        /* -------------------------------------------------------- */
+
 
         function redirect() {
 
@@ -46,12 +115,20 @@
 
         }
 
-        function logout () {
+        function logout() {
 
             window.location.assign('/logout');
+
+        }
+
+        function homepage() {
+
+            window.location.assign('/');
 
         }
 
     </script>
 
 {% endblock %}
+
+

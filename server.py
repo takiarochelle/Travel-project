@@ -54,11 +54,11 @@ def validate_login():
     email = request.form.get('email')
     password = request.form.get('password')
 
-    valid_user = User.query.filter_by(email=email, password=password).first()
+    user = User.query.filter_by(email=email, password=password).first()
 
-    if valid_user:
+    if user:
         session['email'] = email
-        return redirect(url_for('user_profile', username=valid_user.username))
+        return redirect(url_for('user_profile', username=user.username))
 
     else:
         flash('Email or password is incorrect')
@@ -111,29 +111,25 @@ def user_profile(username):
 
     user = User.query.filter_by(username=username).first()
 
-    return render_template('profile.html', user=user)
+    return render_template('profile.html', 
+                            user=user)
 
 
+@app.route('/my_submit', methods=['POST'])
+def handle_submit():
+    """Save profile image"""
 
-# @app.route('/my_submit', methods=['POST'])
-# def handle_submit():
-#     """Save profile image"""
+    f = request.files['my_photo']
+    f.save('static/' + f.filename)
+    # filename = request.form.get('my_photo')
 
-#     f = request.files['my_photo']
-#     filename = f.save('static/' + f.filename)
+    email = session.get('email')
+    user = User.query.filter_by(email=email).first()
+    user.image_file = 'static/' + f.filename
 
-#     email = session.get('email')
-#     user = User.query.filter_by(email=email).first()
+    db.session.commit()
 
-#     user.image_file = filename
-
-#     db.session.commit()
-
-#     return redirect(url_for('user_profile', 
-#                             fname=user.fname, 
-#                             created_trips=user.created_trips, 
-#                             other_trips=user.trips, 
-#                             profile_image=user.image_file))
+    return user.image_file
 
 
 @app.route('/add-trip')
@@ -147,13 +143,13 @@ def add_trip():
 def trip_itinerary(trip_name, trip_id):
     
     email = session.get('email')
-    place = request.args.get('place-name')
+    place = request.args.get('place-location')
     user = User.query.filter_by(email=email).first()
-    trip = db.session.query(Trip).get(trip_id)
-    place_exist = Place.query.filter_by(trip_id=trip_id, place_name=place).first()
+    trip = Trip.query.filter_by(trip_id=trip_id).first()
+    place_exists = Place.query.filter_by(trip_id=trip_id, place_name=place).first()
 
-    if place and place_exist == None:
-        new_place = Place(trip_id=trip_id,
+    if place and place_exists == None:
+        new_place = Place(trip_id=trip.trip_id,
                         user_id=user.user_id,
                         place_name=place)
 
@@ -190,21 +186,18 @@ def validate_trip():
 
     return redirect(url_for('trip_itinerary',
                             trip_name=new_trip.trip_name, 
-                            trip_id=new_trip.trip_id,
-                            trip=new_trip,
-                            username=user.username))
+                            trip_id=new_trip.trip_id))
 
 
+@app.route('/delete-place')
+def delete_place():
+    """Remove place from the database"""
 
-# @app.route('/delete-place.json')
-# def delete_place(list_of_places):
-#     """Remove place from the database"""
+    place_id = int(request.args.get('place_id'))
+    Place.query.filter_by(place_id=place_id).delete()
+    db.session.commit()
 
-#     for place_id in list_of_places:
-#         place = Place.query.filter_by(place_id=place_id).first()
-#         place.delete()
-
-#     return 
+    return "Place deleted!"
 
 
 

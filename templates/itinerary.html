@@ -2,68 +2,39 @@
 
 {% block content %}
 
-    <nav class="navbar" style="background-color: rgb(140, 208, 238);">
+    <nav class="navbar">
 
         <span>
             <button onclick="redirectProfile()">Profile</button>
             <button>Edit Profile</button>
         </span>
-        <button onclick="redirectLogout()">Logout</button>
+        <span>
+            <button onclick="redirectLogout()">Logout</button>
+        </span>
 
     </nav>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Edit Places</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="/delete-places">
-                <ol>
-                    {% for place in trip.places %}
-                    <li>
-                        <span>
-                            {{ place.place_name }}
-                            <input type="checkbox" id="{{place.place_id}}" class="place-list">
-                        </span>
-                    </li>
-                    <br>
-                    {% endfor %}
-                </ol>
-            <form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" id="save-delete-places" class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--End of Modal -->
-
     <h1>{{ trip.trip_name }}</h1>
 
-    <h5>({{ trip.start_date }}) - ({{ trip.end_date }})</h5>
+    <h5>({{ trip.start_date.strftime('%d-%b-%Y') }}) - ({{ trip.end_date.strftime('%d-%b-%Y') }})</h5>
 
-    <form action="/{{ trip_name }}-{{ trip_id }}">
-<!--         <input id="pac-input" class="controls" type="search" name="place-name" placeholder="Search..." size="35"> -->
-        <input id="pac-input" class="controls" type="text" placeholder="Search Box" name="place-name" size="35">
-        <button type="submit">Add Place</button>
-    </form>
-    <br>
+<!--     <form action="/{{ trip_name }}-{{ trip_id }}">
+        <input id="search-place" type="search" name="place-name" placeholder="Search..." size="35"> -->
+<!--         <input id="pac-input" class="controls" type="text" placeholder="Search Box" name="place-name" size="35"> -->
+<!--         <button type="submit">Add Place</button>
+        <br>
+    </form> -->
+
     <div class="container">
-
+       
         <div class="row">
+
             <!-- GOOGLE MAP -->
-            <div id="map" class="col-8"></div>
+            <input id="pac-input" class="controls" type="text" placeholder="Search Box" name="place-location">
+            <div id="map" class="col-7"></div>
             <!-- END OF GOOGLE MAP -->
 
-            <div id="list-of-places" class="col-4">
+            <div id="list-of-places" class="col-5">
                 <h3>List of Places</h3>
                 <ol>
                     {% for place in trip.places %}
@@ -94,9 +65,81 @@
         <button>Add Friends</button>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Places</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="/delete-places">
+                <ol>
+                    {% for place in trip.places %}
+                    <li>
+                        <span>
+                            {{ place.place_name }}
+                            <input type="checkbox" class="delete-place" id="{{ place.place_id }}">
+                        </span>
+                    </li>
+                    <br>
+                    {% endfor %}
+                </ol>
+            <form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" id="save-delete-places" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End of Modal -->
+    {% endblock %}
+
+    {% block script %}
+<!--     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
     <script type="text/javascript">
         'use strict';
+        /*------------------DELETE PLACE FROM LIST---------------------------*/
 
+        function confirmDelete(result) {
+            alert(result);
+        }
+
+        function deletePlace() {
+            $('input[type=checkbox]').each(function() {
+                if (this.checked) {
+                    let formData = {"place_id": $(this).attr('id')};
+                    $.get('/delete-place', formData, confirmDelete);
+                }
+            })
+        }
+
+        $('#save-delete-places').on('click', deletePlace);
+
+        /*---------------ADD PLACE FROM GOOGLE SEARCH -----------------------*/
+
+        function displayPlace() {
+            alert('Place successfully added!');
+        }
+
+
+        function addPlace() {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+
+            if(keycode == '13') {
+                let formData = {"place-location": $('#pac-input').val()};
+                $.get('/{{ trip_name }}-{{ trip_id }}', formData, displayPlace);
+            }
+        }
+
+        $('#pac-input').keypress(addPlace);
+
+        /*---------------------------REDIRECTS--------------------------------*/
 
         function redirectProfile() {
             window.location.assign('/profile/{{ username }}');
@@ -108,7 +151,7 @@
 
     </script>
     <script src="static/main.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=MY_API_KEY&libraries=places&callback=initMap" async defer></script> 
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initAutocomplete" async defer></script> 
 
 
 {% endblock %}
