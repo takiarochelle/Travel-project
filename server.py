@@ -17,8 +17,10 @@ YOUR_API_KEY = config.YOUR_API_KEY
 @app.route('/')
 def index():
     """Display homepage"""
+    email = session.get('email')
+    user = User.query.filter_by(email=email).first()
 
-    return render_template('index.html')
+    return render_template('index.html', user=user)
 
 
 @app.route('/register')
@@ -65,7 +67,6 @@ def validate_login():
         return redirect(url_for('login'))
 
 
-
 @app.route('/validate-user', methods=['POST'])
 def validate_new_user():
     """Validate new user and add to the database."""
@@ -108,11 +109,12 @@ def validate_new_user():
 @app.route('/profile/<username>')
 def user_profile(username):
     """Display user's profile page"""
+    if session:
 
-    user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first()
 
-    return render_template('profile.html', 
-                            user=user)
+        return render_template('profile.html', 
+                                user=user)
 
 
 @app.route('/my_submit', methods=['POST'])
@@ -121,7 +123,6 @@ def handle_submit():
 
     f = request.files['my_photo']
     f.save('static/' + f.filename)
-    # filename = request.form.get('my_photo')
 
     email = session.get('email')
     user = User.query.filter_by(email=email).first()
@@ -145,6 +146,7 @@ def trip_itinerary(trip_name, trip_id):
     email = session.get('email')
     place = request.args.get('place-location')
     user = User.query.filter_by(email=email).first()
+    users = User.query.filter(User.email!=email).all()
     trip = Trip.query.filter_by(trip_id=trip_id).first()
     place_exists = Place.query.filter_by(trip_id=trip_id, place_name=place).first()
 
@@ -160,7 +162,8 @@ def trip_itinerary(trip_name, trip_id):
                             trip_name=trip_name,
                             trip_id=trip_id,
                             trip=trip,
-                            username=user.username)
+                            username=user.username,
+                            users=users)
 
 
 @app.route('/validate-trip', methods=['POST'])
@@ -189,6 +192,35 @@ def validate_trip():
                             trip_id=new_trip.trip_id))
 
 
+@app.route('/add-friends')
+def add_friends():
+    """Display list of users"""
+    
+    user_id = int(request.args.get('user_id'))
+    trip_id = int(request.args.get('trip_id'))
+    user = User.query.filter_by(user_id=user_id).first()
+    trip = Trip.query.filter_by(trip_id=trip_id).first()
+
+    trip.travel_buddies.append(user)
+
+    db.session.commit()
+
+    return user.fname
+
+
+@app.route('/places/<trip_id>.json')
+def get_places(trip_id):
+
+    trip = Trip.query.filter_by(trip_id=trip_id).first()
+    places = trip.places
+    places_in_trip = {}
+
+    for place in places:
+        places_in_trip[place.place_name] = place.place_id
+
+    return jsonify(places_in_trip)
+
+
 @app.route('/delete-place')
 def delete_place():
     """Remove place from the database"""
@@ -198,7 +230,6 @@ def delete_place():
     db.session.commit()
 
     return "Place deleted!"
-
 
 
 @app.route('/logout')

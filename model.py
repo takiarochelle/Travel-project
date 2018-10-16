@@ -49,22 +49,6 @@ class Trip(db.Model):
                     creator {self.creator_id}, 
                     duration {self.start_date} - {self.end_date}>"""
 
-
-    def edit_trip_name(self, name):
-        """Edit name of Trip"""
-
-        self.trip_name = name
-
-        db.session.commit()
-
-        return self.trip_name
-
-    # def remove_user(self, user_id):
-    #     """Remove user from trip"""
-
-    #     user
-
-
     @staticmethod
     def convert_date_format(date):
 

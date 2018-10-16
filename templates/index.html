@@ -4,14 +4,21 @@
 
 {% block content %}
 		<nav class="navbar">
+			{% if session %}
+				<span>
+					<button onclick="goToLogout()">Logout</button>
+					<button id="go-to-profile">Profile</button>
+				</span>
+			{% else %}
 				<span>
 						<button onclick="goToLogin()">Login</button>
 						<button onclick="goToRegister()">Register</button>
 				</span>
+			{% endif %}
 		</nav>
 
-		<h1>Welcome to Travel Planner!</h1>
-		<span>The place to plan trips with your friends!</span>
+		<h1>Travel Planner</h1>
+		<span>The place to organize your trips.</span>
 		<br>
 
 		<!-- Carousel -->
@@ -72,11 +79,9 @@
 		</div>
 		<!-- End of Carousel -->
 
-		<br>
-
-		
 		{% block script %}
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<!-- 		
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
 		<script>
 				'use strict';
 
@@ -87,6 +92,16 @@
 				function goToRegister() {
 						window.location.assign('/register');
 				}
+
+				function goToLogout() {
+					window.location.assign('/logout');
+				}
+
+				/*-----------------------------------------------*/
+
+				// $('#go-to-profile').on('click', function() {}
+
+
 		</script>
 
 		{% endblock %}

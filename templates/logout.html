@@ -5,15 +5,19 @@
 <h1>Goodbye!</h1>
 
 <button id="login-again" onclick="redirect()">Login</button>
+<button onclick="goHome()">Home</button>
 
 <script type="text/javascript">
     'use strict';
 
     function redirect() {
-
         window.location.assign('/login');
-
     }
+
+    function goHome() {
+        window.location.assign('/');
+    }
+    
 </script>
 
 {% endblock %}

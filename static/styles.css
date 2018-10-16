@@ -7,7 +7,8 @@
 
 body {
     text-align: center;
-    background-color: rgba(158, 190, 204);
+/*    background-color: rgba(158, 190, 204);*/
+    background-color: white;
 }
 
 .navbar {
@@ -43,14 +44,15 @@ body {
     color: white;
 }
 
-h1, span, #list-of-places {
+h1, h5, span, #list-of-places {
     color: black;
     font-family: "Courier New", Courier, monospace;
 }
 
 .carousel-inner > .carousel-item > img {
-    height: 400px;
+    height: 450px;
     width: 100%;
+    bottom: 0px;
 }
 
 #list-group {
@@ -74,7 +76,8 @@ h1, span, #list-of-places {
 
 #travel-friends {
     height: 200px;
-    width: 200px;
+/*    width: 200px;*/
+    width: 100%;
 }
 
 #description {
@@ -153,6 +156,10 @@ h1, span, #list-of-places {
 #list-of-places {
     display: inline-block;
     text-align: left;
+}
+
+.travel-buddy-list {
+    display: inline-block;
 }
 
 

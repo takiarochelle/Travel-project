@@ -96,11 +96,12 @@
         }
 
 
-        function getImage() {
+        function getImage(evt) {
             
-            // let formData = {'my_photo': $('input[type=file]').val()};
-            $.post('/my_submit', displayImage);
-            // evt.preventDefault();
+            evt.preventDefault();
+            let formData = {'my_photo': $('input[type=file]').val()};
+            $.get('/my_submit', formData, displayImage);
+
         }
 
 
