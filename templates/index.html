@@ -3,28 +3,29 @@
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
+
 		<nav class="navbar">
-			{% if session %}
+			{% if not session %}
 				<span>
-					<button onclick="goToLogout()">Logout</button>
-					<button id="go-to-profile">Profile</button>
+					<button onclick="goToLogin()">Login</button>
+					<button onclick="goToRegister()">Register</button>
 				</span>
 			{% else %}
 				<span>
-						<button onclick="goToLogin()">Login</button>
-						<button onclick="goToRegister()">Register</button>
+					<button onclick="window.location.assign('/profile/{{ user.username }}');">Profile</button>
+					<button onclick="goToLogout()">Logout</button>
 				</span>
 			{% endif %}
 		</nav>
 
-		<h1>Travel Planner</h1>
+<!-- 		<h1><i class="fas fa-archway"></i> Tripster</h1> -->
+		<h1><i class="fas fa-globe-americas"></i> Tripster</h1>
 		<span>The place to organize your trips.</span>
 		<br>
 
 		<!-- Carousel -->
 		<div>
 			<div>
-					<!-- <div class="col-sm-12"> -->
 					<div>
 							<div id="my-carousel" class="carousel slide" data-ride="carousel">
 									
@@ -80,13 +81,13 @@
 		<!-- End of Carousel -->
 
 		{% block script %}
-<!-- 		
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+
 		<script>
+
 				'use strict';
 
 				function goToLogin() {
-						window.location.assign('/login');
+					window.location.assign('/login');
 				}
 
 				function goToRegister() {
@@ -96,11 +97,6 @@
 				function goToLogout() {
 					window.location.assign('/logout');
 				}
-
-				/*-----------------------------------------------*/
-
-				// $('#go-to-profile').on('click', function() {}
-
 
 		</script>
 

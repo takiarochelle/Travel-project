@@ -3,7 +3,6 @@ from flask import Flask, redirect, request, render_template, session, url_for, f
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import User, Trip, Place, UserTrip, connect_to_db, db
-import config
 
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
@@ -11,12 +10,12 @@ app.jinja_env.auto_reload = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-YOUR_API_KEY = config.YOUR_API_KEY
-
+# my_api_key = os.environ['YOUR_API_KEY']
 
 @app.route('/')
 def index():
     """Display homepage"""
+
     email = session.get('email')
     user = User.query.filter_by(email=email).first()
 
@@ -109,6 +108,7 @@ def validate_new_user():
 @app.route('/profile/<username>')
 def user_profile(username):
     """Display user's profile page"""
+
     if session:
 
         user = User.query.filter_by(username=username).first()
@@ -130,7 +130,7 @@ def handle_submit():
 
     db.session.commit()
 
-    return user.image_file
+    return redirect(url_for('user_profile', username=user.username))
 
 
 @app.route('/add-trip')
@@ -142,21 +142,13 @@ def add_trip():
 
 @app.route('/<trip_name>-<trip_id>')
 def trip_itinerary(trip_name, trip_id):
+    """Display page with itinerary for the trip"""
     
     email = session.get('email')
     place = request.args.get('place-location')
     user = User.query.filter_by(email=email).first()
     users = User.query.filter(User.email!=email).all()
     trip = Trip.query.filter_by(trip_id=trip_id).first()
-    place_exists = Place.query.filter_by(trip_id=trip_id, place_name=place).first()
-
-    if place and place_exists == None:
-        new_place = Place(trip_id=trip.trip_id,
-                        user_id=user.user_id,
-                        place_name=place)
-
-        db.session.add(new_place)
-        db.session.commit()
 
     return render_template('itinerary.html',
                             trip_name=trip_name,
@@ -168,15 +160,13 @@ def trip_itinerary(trip_name, trip_id):
 
 @app.route('/validate-trip', methods=['POST'])
 def validate_trip():
+    """Allow user to create a new trip"""
 
     email = session.get('email')
     user = User.query.filter_by(email=email).first()
     trip_name = request.form.get('trip-name')
     start_date = request.form.get('start-date')
     end_date = request.form.get('end-date')
-
-    start_date = Trip.convert_date_format(start_date)
-    end_date = Trip.convert_date_format(end_date)
 
     new_trip = Trip(creator_id=user.user_id,
                     trip_name=trip_name,
@@ -192,7 +182,7 @@ def validate_trip():
                             trip_id=new_trip.trip_id))
 
 
-@app.route('/add-friends')
+@app.route('/add-friends.json')
 def add_friends():
     """Display list of users"""
     
@@ -205,31 +195,43 @@ def add_friends():
 
     db.session.commit()
 
-    return user.fname
+    return jsonify({'info': render_template('itinerary.html', 
+                                            trip_id=trip_id, 
+                                            trip_name=trip.trip_name)})
 
 
-@app.route('/places/<trip_id>.json')
-def get_places(trip_id):
+@app.route('/add-place/<trip_id>')
+def add_place(trip_id):
+    """Add place to a trip itinerary"""
 
     trip = Trip.query.filter_by(trip_id=trip_id).first()
-    places = trip.places
-    places_in_trip = {}
+    email = session.get('email')
+    user = User.query.filter_by(email=email).first()
+    place_name = request.args.get('place-location')
+    place_exists = Place.query.filter_by(trip_id=trip_id, place_name=place_name).first()
 
-    for place in places:
-        places_in_trip[place.place_name] = place.place_id
+    if place_name and place_exists == None:
+        new_place = Place(trip_id=trip_id,
+                        user_id=user.user_id,
+                        place_name=place_name)
 
-    return jsonify(places_in_trip)
+        db.session.add(new_place)
+        db.session.commit()
+
+    return redirect(url_for('trip_itinerary',
+                            trip_name=trip.trip_name,
+                            trip_id=trip_id))
 
 
 @app.route('/delete-place')
 def delete_place():
-    """Remove place from the database"""
+    """Remove place from the trip"""
 
     place_id = int(request.args.get('place_id'))
     Place.query.filter_by(place_id=place_id).delete()
     db.session.commit()
 
-    return "Place deleted!"
+    return "Deleted!"
 
 
 @app.route('/logout')

@@ -5,6 +5,13 @@
     background-position: center;
 }
 
+#logout-body {
+    background-image: url(https://www.westjet.com/assets/wj-web/images/2018/wj/14771-Home-Hero-1600x500.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 400px;
+    background-position: center;
+}
+
 body {
     text-align: center;
 /*    background-color: rgba(158, 190, 204);*/
@@ -20,14 +27,12 @@ body {
 }
 
 #upload-image span {
-    text-align: center;
+/*    text-align: center;*/
+    width: 50%;
+    margin: 0 auto;
+
 }
 
-/*.page-wrap {
-    width: 960px;
-    margin-left: auto; 
-    margin-right: auto;
-}*/
 .center-login {
     height: 300px;
     width: 300px;
@@ -44,15 +49,19 @@ body {
     color: white;
 }
 
-h1, h5, span, #list-of-places {
+h1, h5, span, button, #list-of-places-container, .navbar {
     color: black;
-    font-family: "Courier New", Courier, monospace;
+    font-family: 'Arvo', serif;
 }
 
 .carousel-inner > .carousel-item > img {
     height: 450px;
     width: 100%;
     bottom: 0px;
+}
+
+#logout-carousel > .carousel-inner > .carousel-item > img {
+    opacity: 1;
 }
 
 #list-group {
@@ -75,9 +84,10 @@ h1, h5, span, #list-of-places {
 }
 
 #travel-friends {
-    height: 200px;
-/*    width: 200px;*/
+    height: 230px;
     width: 100%;
+    background-color: rgb(245, 131, 114);
+/*    background-color: rgb(135, 197, 64);*/
 }
 
 #description {
@@ -153,7 +163,7 @@ h1, h5, span, #list-of-places {
 }
 
 
-#list-of-places {
+#list-of-places-container {
     display: inline-block;
     text-align: left;
 }

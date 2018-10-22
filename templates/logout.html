@@ -1,11 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<body id="logout-body">
 
-<h1>Goodbye!</h1>
+<div class="center-login rounded" style="background-color: white;">
+        <div>
+            <h1>Goodbye!</h1>
 
-<button id="login-again" onclick="redirect()">Login</button>
-<button onclick="goHome()">Home</button>
+            <button id="login-again" onclick="redirect()">Login</button>
+            <button onclick="goHome()">Home</button>
+        </div>
+    </div>
+<br>
+
+</body>
+{% endblock %}
+
+{% block script %}
 
 <script type="text/javascript">
     'use strict';
@@ -17,7 +28,7 @@
     function goHome() {
         window.location.assign('/');
     }
-    
+
 </script>
 
 {% endblock %}

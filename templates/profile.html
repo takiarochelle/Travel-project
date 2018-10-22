@@ -15,10 +15,7 @@
         <div class="row">
             <div id="profile-pic" class="col-6">
                 <img src="../{{ user.image_file }}" id="profile-image" height="200" width="280">
-<!--                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#profile-pic-modal">Update Image
-                </button> -->
                 <br>
-
                 <form id="upload-image" enctype="multipart/form-data" action="/my_submit" method="post">
                     <br>
                     <span>
@@ -29,15 +26,14 @@
                 </form>
             </div>
 
-
-
             <div class="col-6 trip-list">
-                <h5>Upcoming Trips</h5>
-
+<!--                 <h5>Trips</h5>
+ -->
                 <div class="list-group">
                     {% for trip in user.created_trips %}
                       <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
                         {{ trip.trip_name }}
+                        <br>
                         ({{ trip.start_date.strftime('%d-%b-%Y') }} - {{ trip.end_date.strftime('%d-%b-%Y') }})
                       </a>
                     {% endfor %}
@@ -45,6 +41,7 @@
                     {% for trip in user.trips %}
                       <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
                         {{ trip.trip_name }}
+                        <br>
                         ({{ trip.start_date.strftime('%d-%b-%Y') }} - {{ trip.end_date.strftime('%d-%b-%Y') }})
                       </a>
                     {% endfor %}
@@ -55,31 +52,6 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    
-<!--     <div class="modal fade" id="profile-pic-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Update Profile Picture</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form enctype="multipart/form-data" action="/my_submit" method="post">
-                <input type="file" name="my_photo" accept="image/*">
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" id="submit-image" class="btn btn-primary" data-dismiss="modal">Upload</button>
-          </div>
-        </div>
-      </div>
-    </div> -->
-    
-    <!--End of Modal -->
 
 {% endblock %}
     
@@ -87,45 +59,17 @@
 
     <script type="text/javascript">
         'use strict';
-        /* Get image uploaded by user and display on profile page */
-
-        function displayImage(result) {
-
-            $('#profile-image').attr('src', result);
-
-        }
-
-
-        function getImage(evt) {
-            
-            evt.preventDefault();
-            let formData = {'my_photo': $('input[type=file]').val()};
-            $.get('/my_submit', formData, displayImage);
-
-        }
-
-
-        $('#submit-image').on('click', getImage);
-
-        /* -------------------------------------------------------- */
-
 
         function redirect() {
-
             window.location.assign('/add-trip');
-
         }
 
         function logout() {
-
             window.location.assign('/logout');
-
         }
 
         function homepage() {
-
             window.location.assign('/');
-
         }
 
     </script>

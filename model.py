@@ -14,7 +14,7 @@ class User(db.Model):
     username = db.Column(db.String(12), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(12), nullable=False)
-    image_file = db.Column(db.String(60), nullable=False, default='default.jpg')
+    image_file = db.Column(db.String(60), nullable=False, default='static/default.jpg')
 
 
     def __repr__(self):
