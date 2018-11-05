@@ -203,6 +203,8 @@ def delete_trip():
     user = User.query.filter_by(email=session.get('email')).first()
 
     if user == trip.creator:
+        trip.places[:] = []
+        trip.travel_buddies[:] = []
         Trip.query.filter_by(trip_id=trip_id).delete()
 
     else:
