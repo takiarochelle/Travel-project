@@ -4,75 +4,169 @@
 
 {% block content %}
 
-    <nav class="navbar">
-        <button onclick="homepage()">Home</button>
-        <button onclick="logout()">Logout</button>
+    <nav class="navbar" id="profile-navbar">
+        <span>
+            <button onclick="homepage()">Home</button>
+        </span>
+        <h3 class="logo">Tripster</h3>
+        <span>
+            <button onclick="logout()" style="color: rgb(130, 206, 220);">Logout</button>
+        </span>
     </nav>
-    <br>
-    <h1>Welcome, {{ user.fname }}</h1>
-    <br>
-    <div class="container">
-        <div class="row">
+
+    <!----------------------------- PROFILE IMAGE ---------------------------->
+    <div class="container" id="profile-container">
+        <h1 style="color: white; text-align: left;">Welcome, {{ user.fname }}</h1>
+        <div class="row profile-info-container">
             <div id="profile-pic" class="col-6">
-                <img src="../{{ user.image_file }}" id="profile-image" height="200" width="280">
+                <img src="../{{ user.image_file }}" id="profile-image" height="280" width="400">
                 <br>
-                <form id="upload-image" enctype="multipart/form-data" action="/my_submit" method="post">
-                    <br>
-                    <span>
-                        <input type="file" name="my_photo" accept="image/*">
-                        <br>
-                        <input type="submit" id="submit-image" value="Upload">
-                    </span>
-                </form>
+                <br>
+                <button type="button" class="profile-button" data-toggle="modal" data-target="#profile-photo-modal">
+                    Update Profile Picture
+                </button>
             </div>
 
-            <div class="col-6 trip-list">
-<!--                 <h5>Trips</h5>
- -->
-                <div class="list-group">
-                    {% for trip in user.created_trips %}
-                      <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
-                        {{ trip.trip_name }}
-                        <br>
-                        ({{ trip.start_date.strftime('%d-%b-%Y') }} - {{ trip.end_date.strftime('%d-%b-%Y') }})
-                      </a>
-                    {% endfor %}
-
-                    {% for trip in user.trips %}
-                      <a href="/{{ trip.trip_name }}-{{ trip.trip_id }}" class="list-group-item list-group-item-action">
-                        {{ trip.trip_name }}
-                        <br>
-                        ({{ trip.start_date.strftime('%d-%b-%Y') }} - {{ trip.end_date.strftime('%d-%b-%Y') }})
-                      </a>
-                    {% endfor %}
+    <!----------------------------- LIST OF TRIPS ---------------------------->
+            <div class="trip-list col-6 scroll-trip">
+                {% for trip in user.created_trips %}
+                    <div class="trips-container" id="{{ trip.trip_id }}-trip">
+                        <span class="trip-text">
+                            <a class="trip-link" href="/{{ trip.trip_name }}-{{ trip.trip_id }}">
+                                {{ trip.trip_name }}
+                                <br>
+                                {{ trip.start_date.strftime('%d-%b-%Y') }}
+                            </a>
+                        </span>
+                    </div>
+                    <br>
+                {% endfor %}
+                <div>
+                {% for trip in user.trips %}
+                    <div class="trips-container" id="{{ trip.trip_id }}-trip">
+                        <span class="trip-text">
+                            <a class="trip-link" href="/{{ trip.trip_name }}-{{ trip.trip_id }}">
+                                {{ trip.trip_name }}
+                                <br>
+                                {{ trip.start_date.strftime('%d-%b-%Y') }}
+                            </a>
+                        </span>
+                    </div>
+                    <br>
+                {% endfor %}
                 </div>
-                <br>
-                <button id="add-trip" onclick="redirect()">Add Trip</button>
             </div>
         </div>
     </div>
+    <br>
+    <div style="text-align: right; margin-right: 300px;">
+        <button class="btn btn-primary add-del-trip" data-toggle="modal" data-target="#add-trip-modal">+</button>
+        <button type="button" class="btn btn-primary add-del-trip" data-toggle="modal" data-target="#remove-trip-modal">-</button>
+    </div>
+    <div class="footer"></div>
 
+    <!--------------------------- ADD PROFILE PHOTO MODAL ------------------------->
+    <div class="modal fade" id="profile-photo-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Profile Photo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="upload-image" enctype="multipart/form-data" action="/my_submit" method="post">
+                <br>
+                <span>
+                    <input type="file" name="my_photo" accept="image/*">
+                    <br>
+                    <input type="submit" id="submit-image" value="Upload">
+                </span>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!---------------------------- ADD TRIPS MODAL --------------------------->
+    <div class="modal fade" id="add-trip-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Trip</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="/validate-trip" method="post">
+                Trip name <br>
+                <input type="text" name="trip-name" required>
+                <br>
+                <br>
+                Start date <br>
+                <input type="date" name="start-date" required>
+                <br>
+                <br>
+                End date <br>
+                <input type="date" name="end-date" required>
+                <br>
+                <br>
+                <button type="submit" class="btn btn-primary" id="add-trip-button">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--------------------------- DELETE TRIPS MODAL ------------------------->
+    <div class="modal fade" id="remove-trip-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Remove Trip(s)</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="/delete-trip.json" method="post">
+                <ul class="list-of-trips-modal">
+                    {% for trip in user.created_trips %}
+                    <li>
+                        <span>
+                            *{{ trip.trip_name }} ({{ trip.start_date.strftime('%d-%b-%Y') }} - {{ trip.end_date.strftime('%d-%b-%Y') }})
+                            <input type="checkbox" class="delete-trip" id="{{ trip.trip_id }}">
+                        </span>
+                    </li>
+                    <br>
+                    {% endfor %}
+                    {% for trip in user.trips %}
+                    <li>
+                        <span>
+                            {{ trip.trip_name }} ({{ trip.start_date.strftime('%d-%b-%Y') }} - {{ trip.end_date.strftime('%d-%b-%Y') }})
+                            <input type="checkbox" class="delete-trip" id="{{ trip.trip_id }}">
+                        </span>
+                    </li>
+                    <br>
+                    {% endfor %}
+                </ul>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" id="save-removed-trips" class="btn btn-primary" data-dismiss="modal">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
 {% endblock %}
     
 {% block script %}
 
-    <script type="text/javascript">
-        'use strict';
-
-        function redirect() {
-            window.location.assign('/add-trip');
-        }
-
-        function logout() {
-            window.location.assign('/logout');
-        }
-
-        function homepage() {
-            window.location.assign('/');
-        }
-
-    </script>
+<script src="../static/profile.js"></script>
 
 {% endblock %}
 

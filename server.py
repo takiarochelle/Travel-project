@@ -8,9 +8,8 @@ app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
 app.jinja_env.auto_reload = True
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-# my_api_key = os.environ['YOUR_API_KEY']
+
 
 @app.route('/')
 def index():
@@ -22,39 +21,12 @@ def index():
     return render_template('index.html', user=user)
 
 
-@app.route('/register')
-def register():
-    """Display Registration page."""
-
-    email = session.get('email')
-
-    if email:
-        user = User.query.filter_by(email=email).first()
-        return redirect(url_for('user_profile', username=user.username))
-
-    return render_template('register.html')
-
-
-@app.route('/login')
-def login():
-    """Display login page"""
-
-    email = session.get('email')
-    
-    if email:
-        user = User.query.filter_by(email=email).first()
-        return redirect(url_for('user_profile', username=user.username))
-
-    return render_template('login.html')
-
-
 @app.route('/validate-login', methods=['POST'])
 def validate_login():
     """Check that user entered correct email and password."""
 
     email = request.form.get('email')
     password = request.form.get('password')
-
     user = User.query.filter_by(email=email, password=password).first()
 
     if user:
@@ -63,7 +35,6 @@ def validate_login():
 
     else:
         flash('Email or password is incorrect')
-        return redirect(url_for('login'))
 
 
 @app.route('/validate-user', methods=['POST'])
@@ -83,11 +54,9 @@ def validate_new_user():
 
     if email != confirm_email or password != confirm_password:
         flash('Email or password do not match')
-        return redirect('/register')
 
     elif user_by_email or user_by_username:
         flash('Email or username is already taken')
-        return redirect('/register')
 
     else:
         flash('Successfully registered!')
@@ -100,9 +69,9 @@ def validate_new_user():
         db.session.add(new_user)
         db.session.commit()
 
-    session['email'] = email
+        session['email'] = email
 
-    return redirect(url_for('user_profile', username=username))
+        return redirect(url_for('user_profile', username=username))
 
 
 @app.route('/profile/<username>')
@@ -133,19 +102,11 @@ def handle_submit():
     return redirect(url_for('user_profile', username=user.username))
 
 
-@app.route('/add-trip')
-def add_trip():
-    """Add trip to users list of trips in the database"""
-
-    return render_template('add_trip.html')
-
-
 @app.route('/<trip_name>-<trip_id>')
 def trip_itinerary(trip_name, trip_id):
     """Display page with itinerary for the trip"""
     
     email = session.get('email')
-    place = request.args.get('place-location')
     user = User.query.filter_by(email=email).first()
     users = User.query.filter(User.email!=email).all()
     trip = Trip.query.filter_by(trip_id=trip_id).first()
@@ -195,9 +156,8 @@ def add_friends():
 
     db.session.commit()
 
-    return jsonify({'info': render_template('itinerary.html', 
-                                            trip_id=trip_id, 
-                                            trip_name=trip.trip_name)})
+    return jsonify({'profile_img': user.image_file,
+                    'full_name': f'{user.fname} {user.lname}'})
 
 
 @app.route('/add-place/<trip_id>')
@@ -223,7 +183,7 @@ def add_place(trip_id):
                             trip_id=trip_id))
 
 
-@app.route('/delete-place')
+@app.route('/delete-place.json')
 def delete_place():
     """Remove place from the trip"""
 
@@ -231,16 +191,49 @@ def delete_place():
     Place.query.filter_by(place_id=place_id).delete()
     db.session.commit()
 
-    return "Deleted!"
+    return jsonify({ 'place_id': place_id })
+
+
+@app.route('/delete-trip.json', methods=['POST'])
+def delete_trip():
+    """Remove trip from users list of trips"""
+
+    trip_id = int(request.form.get('trip_id'))
+    trip = Trip.query.filter_by(trip_id=trip_id).first()
+    user = User.query.filter_by(email=session.get('email')).first()
+
+    if user == trip.creator:
+        Trip.query.filter_by(trip_id=trip_id).delete()
+
+    else:
+        trip.travel_buddies.remove(user)
+        
+    db.session.commit()
+
+    return jsonify({ 'trip_id': trip_id })
+
+
+@app.route('/add-comment/<place_id>.json', methods=['POST'])
+def add_comment(place_id):
+    """Lets user add a comment to a place on the Trip"""
+
+    comment = request.form.get('place-comment')
+    place = Place.query.filter_by(place_id=place_id).first()
+    trip_id = place.trip_id
+    trip = Trip.query.filter_by(trip_id=trip_id).first()
+    place.comment = comment 
+    db.session.commit()
+
+    return jsonify({ 'comment': place.comment })
 
 
 @app.route('/logout')
 def logout():
-    """Display logout page"""
+    """Redirect to Homepage"""
 
     session.clear()
 
-    return render_template('logout.html')
+    return render_template('index.html')
 
 
 if __name__ == "__main__":

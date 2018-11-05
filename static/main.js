@@ -25,7 +25,7 @@ function initAutocomplete() {
   });
 
   // Create markers for each place.
-  // For each place, get the icon, name and location.
+  // For each place, get the marker, name and location.
   var bounds = new google.maps.LatLngBounds();
   var places = $('.places');
 
@@ -39,8 +39,6 @@ function initAutocomplete() {
     var geocoder = new google.maps.Geocoder();
 
     codeAddress(address, geocoder, map, infowindow, bounds);
-
-    // map.fitBounds(bounds);
   }
 }
 
@@ -53,8 +51,6 @@ function codeAddress(place, geocoder, map, infowindow, bounds) {
             map: map,
             position: results[0].geometry.location
         });
-
-        // bounds.extend(marker.position);
 
         marker.addListener('click', function() {
           if (lastWindow) { 

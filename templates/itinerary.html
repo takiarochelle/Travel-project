@@ -2,19 +2,20 @@
 
 {% block content %}
 
+<div id="itinerary-body">
+
     <nav class="navbar">
         <span>
             <button onclick="redirectProfile()">Profile</button>
         </span>
-        <h3><i class="fas fa-globe-americas"></i> Tripster</h3>
+        <h3 class="logo">Tripster</h3>
         <span>
             <button onclick="redirectLogout()">Logout</button>
         </span>
     </nav>
     <br>
     <h1>{{ trip.trip_name }}</h1>
-
-    <h5>{{ trip.start_date.strftime('%d-%b-%Y') }} to {{ trip.end_date.strftime('%d-%b-%Y') }}</h5>
+    <h5 class="trip-date">{{ trip.start_date.strftime('%d-%b-%Y') }} <br> - <br> {{ trip.end_date.strftime('%d-%b-%Y') }}</h5>
     <div>
         <form action="/add-place/{{ trip_id }}">
             <span>
@@ -24,61 +25,86 @@
         </form>
     </div>
     <br>
-    <div class="container">
-       
+    <div class="container">  
         <div class="row">
-            <!------------------- GOOGLE MAP ------------------>
-            <div id="map" class="col-7"></div>
-            <!------------------ LIST OF PLACES ------------------>
-            <div id="list-of-places-container" class="col-5">
-                <h3>Places to Visit:</h3>
+    <!----------------------------- GOOGLE MAP ------------------------------->
+            <div id="map" class="col-12"></div>
+        </div>
+    </div>
+    <br>
+
+    <!---------------------------- LIST OF PLACES ---------------------------->
+    <div class="container">
+        <div class="row">
+            <div id="list-of-places-container" class="col-6">
+                <h5 style="text-align: center;">Spots to Visit</h5>
                 <ul class="list-of-places list-group list-group-flush">
                     {% for place in trip.places %}
-                        <li class="places list-group-item" id="{{ place.place_name }}">
-                            {{ place.place_name }}
+                        <li class="places list-group-item" id="place-{{ place.place_id }}">
+                            <button class="collapsible">{{ place.place_name }}</button>
+                            <div class="content" id="{{ place.place_id }}-comment-container">
+                                {% if place.comment %}
+                                <ul>
+                                    <li style="color: black;">{{ place.comment }}</li>
+                                </ul>
+                                {% else %}
+                                <p>
+                                    <form action="/add-comment/{{ place.place_id }}.json" method="post" class="place-form">
+                                        <textarea id="{{ place.place_id }}-comment" name="place-comment" class="comment-text"></textarea>
+                                        <br>
+                                        <button type="submit" class="comment-button" id="{{ place.place_id }}-button"name="submit-comment">Add comment</button>
+                                    </form>
+                                </p>
+                                {% endif %}
+                            </div>
                         </li>
                     {% endfor %}
                 </ul>
                 <br>
-                <!------------ BUTTON TRIGGER PLACES MODAL -------->
+    <!---------------------- BUTTON TRIGGER PLACES MODAL --------------------->
                 {% if trip.places %}
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                      Delete Places
+                    <button type="button" class="itinerary-button" data-toggle="modal" data-target="#delete-place-modal">
+                      Delete Place(s)
                     </button>
                 {% endif %}
-                <!----------------- END OF BUTTON ------------------->
+            </div>
+
+    <!--------------------------- LIST OF FRIENDS ---------------------------->
+            <div id="travel-friends" class="col-6" style="text-align: center;">
+                <h5>Who's Going</h5>
+                <span id="invited-friends" style="align-content: left;">
+                {% for buddy in trip.travel_buddies %}
+                    {% if buddy.email != session.email %}
+                    <div class='travel-buddy-list' style="text-align: center;">
+                        <img src="{{ buddy.image_file }}" height="80" width="95">
+                        <br>
+                        <span>{{ buddy.fname }} {{ buddy.lname }}</span>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                {% if username != trip.creator.username %}
+                    <div class='travel-buddy-list' style="text-align: center;">
+                        <img src="{{ trip.creator.image_file }}" height="80" width="95">
+                        <br>  
+                        <span>{{ trip.creator.fname }} {{ trip.creator.lname }}</span>    
+                    </div>
+                {% endif %}
+                </span>
+                <br>
+                <br>
+                <span>
+                    <button type="button" class="itinerary-button" data-toggle="modal" data-target="#add-friends">
+                      Invite Friends
+                    </button>
+                </span>
             </div>
         </div>
     </div>
-    <br>
-    <div id="travel-friends" style="text-align: center;">
-        <br>
-        <h6>Travel Buddies:</h6>
-        <span style="align-content: left;">
-        {% for buddy in trip.travel_buddies %}
-            {% if buddy.email != session.email %}
-            <div class='travel-buddy-list' style="text-align: center;">
-                <img src="{{ buddy.image_file }}" height="80" width="100">
-                <br>
-                <span>{{ buddy.fname }}<br>{{ buddy.lname }}</span>
-            </div>
-            {% endif %}
-        {% endfor %}
-        {% if username != trip.creator.username %}
-            <div class='travel-buddy-list' style="text-align: center;">
-                <img src="{{ trip.creator.image_file }}" height="80" width="100">
-                <br>  
-                <span>{{ trip.creator.fname }}<br>{{ trip.creator.lname }}</span>    
-            </div>
-        {% endif %}
-        </span>
-        <br>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-friends">
-          Add Friends
-        </button>
-    </div>
-    <!-------------------------- DELETE PLACES MODAL ----------------------->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <div class="itinerary-footer"></div>
+
+    <!-------------------------- DELETE PLACES MODAL ------------------------->
+    <div class="modal fade" id="delete-place-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -88,7 +114,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form action="/delete-places">
+            <form action="/delete-places.json">
                 <ul class="list-of-places-modal">
                     {% for place in trip.places %}
                     <li>
@@ -100,7 +126,7 @@
                     <br>
                     {% endfor %}
                 </ul>
-            <form>
+            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -109,9 +135,8 @@
         </div>
       </div>
     </div>
-    <!---------------------------- END OF MODAL ----------------------------->
 
-    <!---------------------- ADD TRAVEL BUDDIES MODAL ----------------------->
+    <!---------------------- ADD TRAVEL BUDDIES MODAL ------------------------>
     <div class="modal fade" id="add-friends" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -124,12 +149,11 @@
           <div class="modal-body">
             {% for user in users %}
                 {% if user not in trip.travel_buddies and user != trip.creator %}
-                    <div>
-                      <img src="{{ user.image_file }}" height="80" width="100">
-                    </div>
-                    <div>
-                      {{ user.fname }} {{ user.lname }}
-                      <input type="checkbox" class="select-friend" id="{{ user.user_id }}" name="{{ trip.trip_id }}">
+                    <div class="checked-friend">
+                        <img src="{{ user.image_file }}" height="80" width="100">
+                        <br>
+                        {{ user.fname }} {{ user.lname }}
+                        <input type="checkbox" class="select-friend" id="{{ user.user_id }}" name="{{ trip.trip_id }}">
                     </div>
                     <br>
                 {% endif %}
@@ -142,89 +166,15 @@
         </div>
       </div>
     </div>
-    <!-------------------- END OF ADD FRIENDS MODAL ------------------------->
+</div>
 
 {% endblock %}
 
 {% block script %}
 
-    <script type="text/javascript">
-        'use strict';
-
-        /*----------------------ADD FRIEND TO TRIP---------------------------*/
-
-        function showFriend(result) {
-            alert('Added!');
-        }
-
-        function addFriend() {
-            $('input[type=checkbox]').each(function() {
-                if (this.checked) {
-                    let formData = {"user_id": $(this).attr('id'),
-                                    "trip_id": $(this).attr('name')};
-                    $.get('/add-friends.json', formData, showFriend);
-                }
-            })
-        }
-
-        $('#save-friends').on('click', addFriend);
-
-        /*------------------DELETE PLACE FROM LIST---------------------------*/
-
-        function confirmDelete(result) {
-            alert(result);
-        }
-
-        function deletePlace() {
-            $('input[type=checkbox]').each(function() {
-                if (this.checked) {
-                    let formData = {"place_id": $(this).attr('id')};
-                    $.get('/delete-place', formData, confirmDelete);
-                }
-            })
-        }
-
-        $('#save-delete-places').on('click', deletePlace);
-
-        /*----------------ADD PLACE FROM GOOGLE SEARCH-----------------------*/
-
-        // function displayPlace(result) {
-            // var placeName = result.place_name;
-            // $('.list-of-places').append(`<li class="places" id=${placeName}>${placeName}</li>`);
-            // $('.list-of-places-modal').append(`<li>
-            //                                     <span>
-            //                                     ${placeName}
-            //                                     <input type="checkbox" class="delete-place">
-            //                                     </span>
-            //                                     </li>`);
-        // }
-
-        // function addPlace() {
-        //     let formData = {"place-location": $('#pac-input').val(),
-        //                     "trip-id": "{{ trip_id }}"};
-
-        //     $.get('/add-place.json', formData, displayPlace);
-        // }
-
-        // $('#add-place').on('click', addPlace);
-
-        /*---------------------------REDIRECTS--------------------------------*/
-
-        function redirectProfile() {
-            window.location.assign('/profile/{{ username }}');
-        }
-
-        function redirectLogout() {
-            window.location.assign('/logout');
-        }
-
-        function redirectFriends() {
-            window.location.assign('/add-friends');
-        }
-
-    </script>
+    <script src="../static/itinerary.js"></script>
     <script src="static/main.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=API_KEY&libraries=places&callback=initAutocomplete" async defer></script> 
+    <script src="https://maps.googleapis.com/maps/api/js?key=MY_API_KEY&libraries=places&callback=initAutocomplete" async defer></script> 
 
 
 {% endblock %}
