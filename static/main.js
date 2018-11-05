@@ -1,75 +1,94 @@
 'use strict';
 
-var lastWindow = null;
+/*-------------------------- DELETE TRIP ----------------------------*/
 
-function initAutocomplete() {
-  let myLatLng = {lat: 37.774929, lng: -122.419418};
+function confirmTripDelete(result) {
+    $(`#${result.trip_id}-trip`).remove();
+}
 
-  // Create a map object and specify the DOM element for display.
-  let map = new google.maps.Map(document.getElementById('map'), {
-      center: myLatLng,
-      scrollwheel: false,
-      zoom: 12,
-      zoomControl: true,
-      panControl: false,
-      streetViewControl: false
-  });
-
-  // Create the search box and link it to the UI element.
-  var input = document.getElementById('pac-input');
-  var searchBox = new google.maps.places.SearchBox(input);
-
-  // Bias the SearchBox results towards current map's viewport.
-  map.addListener('bounds_changed', function() {
-    searchBox.setBounds(map.getBounds());
-  });
-
-  // Create markers for each place.
-  // For each place, get the marker, name and location.
-  var bounds = new google.maps.LatLngBounds();
-  var places = $('.places');
-
-  for (let i = 0; i < places.length; i++) {
-    var address = places[i].innerText;
-
-    var infowindow = new google.maps.InfoWindow({
-      content: `${address}`
+function deleteTrip() {
+    $('input[type=checkbox]').each(function() {
+        if (this.checked) {
+            let formData = {"trip_id": $(this).attr('id')};
+            console.log(formData);
+            $.post('/delete-trip.json', formData, confirmTripDelete);
+        }
     });
-
-    var geocoder = new google.maps.Geocoder();
-
-    codeAddress(address, geocoder, map, infowindow, bounds);
-  }
 }
 
-function codeAddress(place, geocoder, map, infowindow, bounds) {
-    var address = place;
-    geocoder.geocode( { 'address': address }, function(results, status) {
-      if (status == 'OK') {
-        map.setCenter(results[0].geometry.location);
-        var marker = new google.maps.Marker({
-            map: map,
-            position: results[0].geometry.location
-        });
+$('#save-removed-trips').on('click', deleteTrip);
 
-        marker.addListener('click', function() {
-          if (lastWindow) { 
-            lastWindow.close();
-          }
-          infowindow.open(map, marker);
-          lastWindow = infowindow;
-        });
+/*-------------------------- INSERT COMMENT -------------------------*/
 
-      } else {
-        alert('Geocode was not successful for the following reason: ' + status);
-      }
+var placeNameId = $('.place-form').attr('action');
+var placeId = parseInt(placeNameId.split(/[/.]/)[2]);
+
+function showComment(result) {
+    $(`#${placeId}-comment-container`).html(`<ul><li style="color: black;">${result.comment}</li></ul>`);
+}
+
+function getComment(evt) {
+    evt.preventDefault();
+    var formData = {'place-comment': $(`#${placeId}-comment`).val()};
+    $.post(`/add-comment/${placeId}.json`, formData, showComment);
+}
+
+$(`#${placeId}-button`).on('click', getComment);
+
+/*------------------------- OPEN COLLAPSIBLE ------------------------*/
+
+var collapse = document.getElementsByClassName("collapsible");
+
+for (var i = 0; i < collapse.length; i++) {
+  collapse[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
   });
 }
 
+/*---------------------- ADD FRIEND TO TRIP -------------------------*/
+
+function showFriend(result) {
+    $('#invited-friends').append(`<div class="travel-buddy-list" style="text-align: center;">
+                                <img src=${result.profile_img} height="80" width="95">
+                                <br><span>${result.full_name}</span>
+                                </div>`);
+}
+
+function addFriend() {
+    $('input[type=checkbox]').each(function() {
+        if (this.checked) {
+            let formData = {"user_id": $(this).attr('id'),
+                            "trip_id": $(this).attr('name')};
+            $.get('/add-friends.json', formData, showFriend);
+        }
+    })
+}
+
+$('#save-friends').on('click', addFriend);
+
+/*------------------ DELETE PLACE FROM LIST -------------------------*/
+
+function confirmDelete(result) {
+    $(`#place-${result.place_id}`).remove();
+}
+
+function deletePlace() {
+    $('input[type=checkbox]').each(function() {
+        if (this.checked) {
+            let formData = {"place_id": $(this).attr('id')};
+            $.get('/delete-place.json', formData, confirmDelete);
+        }
+    })
+}
+
+$('#save-delete-places').on('click', deletePlace);
 
 
 
-
-
-
-
+        

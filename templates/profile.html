@@ -33,7 +33,7 @@
                     <div class="trips-container" id="{{ trip.trip_id }}-trip">
                         <span class="trip-text">
                             <a class="trip-link" href="/{{ trip.trip_name }}-{{ trip.trip_id }}">
-                                {{ trip.trip_name }}
+                                *{{ trip.trip_name }}
                                 <br>
                                 {{ trip.start_date.strftime('%d-%b-%Y') }}
                             </a>
@@ -166,7 +166,22 @@
     
 {% block script %}
 
-<script src="../static/profile.js"></script>
+    <script type="text/javascript">
+        'use strict';
+
+        function redirect() {
+            window.location.assign('/add-trip');
+        }
+
+        function logout() {
+            window.location.assign('/logout');
+        }
+
+        function homepage() {
+            window.location.assign('/');
+        }
+    </script>
+    <script src="../static/main.js"></script>
 
 {% endblock %}
 
