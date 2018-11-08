@@ -1,10 +1,14 @@
 body {
     text-align: center;
-    background-image: url(new_background.jpg);
-    background-repeat: repeat-y;
     height: 100%;
     width: 100%;
     z-index: -1;
+}
+
+#background-profile-image {
+    background-image: url(scooter-2792992_1280.jpg);
+    width: 100%;
+    height: 300px;
 }
 
 #itinerary-body {
@@ -49,37 +53,57 @@ i.fab {
 }
 
 .profile-button {
-    background-color: rgb(130, 206, 220);
-    border-color: rgb(130, 206, 220);
+    background-color: rgba(0,0,0,0);
+    border-color: rgba(0,0,0,0);
     color: white;
     font-family: 'Molengo', sans-serif;
 }
 
 #profile-navbar {
-    background-image: url(new_background.jpg);
-    background-repeat: no-repeat;
-    background-color: white;
-    width: 100%;
+    background-color: rgba(0,0,0,0.5);
+    margin: 0px 50px;
 }
 
 #profile-navbar > span > button {
+    background-color: rgba(0,0,0,0);
+    border-color: rgba(0,0,0,0);
     color: white;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
-.navbar > span > button {
-    background-color: rgba(52, 58, 64, 0);
-    border-color: rgba(52, 58, 64, 0);
-    color: white;
+#itinerary-navbar > span > button {
+    background-color: white;
+    border-color: white;
+    color: black;
+    padding: 0px 20px;
 }
 
-.navbar {
-    background-color: rgb(141, 144, 155);
+#itinerary-navbar > span > button:hover {
+    text-decoration: underline;
+    text-decoration-color: black;
+}
+
+#itinerary-navbar {
+    border-bottom: grey solid 0.5px;
+    margin: 0px 50px;
 }
 
 #index-nav {
     background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0, 0.5); 
+    background-color: rgba(0,0,0,0.5);
+    margin: 0px 50px;
+}
+
+#index-nav > span > button {
+    background-color: rgba(0,0,0,0);
+    border-color: rgba(0,0,0,0);
+    color: white;
+}
+
+#add-place {
+    background-color: coral;
+    border-color: coral;
+    color: white;
 }
 
 .list-group a {
@@ -115,8 +139,7 @@ button:hover {
 
 .trip-list {
     overflow-y: scroll;
-    height: 400px;
-    width: 400px;
+    height: 300px;
 }
 
 .trips-container {
@@ -136,9 +159,8 @@ button:hover {
 }
 
 #profile-pic {
-    background-color: rgb(130, 206, 220);
-    height: 400px;
-    width: 100%;
+    background-color: rgba(0,0,0,0);
+    height: 310px;
     padding: 25px;
 }
 
@@ -148,6 +170,7 @@ button:hover {
 
 .add-del-trip {
     border-radius: 50%;
+    padding: 7px 14px;
     background-color: rgb(243, 122, 121);
     border-color: rgb(243, 122, 121);
     color: white;
@@ -294,6 +317,20 @@ button:hover {
     width: 300px
 }
 
+.comment-list {
+    color: black;
+    font-size: 0.8em;
+    list-style: none;
+}
+
+.comment-list::before {
+    content: "\2022";
+    display: inline-block;
+    margin-left: -2em;
+    width: 1em;
+    color: black;
+}
+
 .itinerary-button {
     background-color: white;
     border-color: white;
@@ -301,16 +338,27 @@ button:hover {
     font-weight: bold;
 }
 
+.itinerary-button:hover {
+    text-decoration: underline;
+    text-decoration-color: white;
+}
+
 .footer {
-    background-image: url(new_background.jpg);
-    background-repeat: no-repeat;
+    background-color: white;
     width: 100%;
     height: 50px;
-    z-index: 0;
 }
 
 .itinerary-footer {
     width: 100%;
     height: 50px;
+}
+
+#del-place-add-friend > div > button {
+    font-family: 'Molengo', sans-serif;
+    background-color: grey;
+    border-color: grey;
+    border-radius: 5%;
+    color: white;
 }
 

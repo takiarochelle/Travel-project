@@ -8,14 +8,14 @@
 
 		<nav class="navbar" id="index-nav">
 			{% if not session %}
-				<span>
-        	<button type="button" data-toggle="modal" data-target="#login-modal">
-            Login
-        	</button>
-        	<button type="button" data-toggle="modal" data-target="#signup-modal">
-            Sign Up
-        	</button>
-			    </span>
+			<span>
+            	<button type="button" data-toggle="modal" data-target="#login-modal">
+                Login
+            	</button>
+            	<button type="button" data-toggle="modal" data-target="#signup-modal">
+                Sign Up
+            	</button>
+			</span>
 			{% else %}
 				<span>
 					<button onclick="window.location.assign('/profile/{{ user.username }}');">Profile</button>
@@ -31,7 +31,7 @@
 		
 		<div class="img-text">
 			<h1>Tripster</h1>
-			<span>Easily plan and organize trips by yourself or with friends.</span>
+			<span>Organize trips with friends with ease.</span>
 		</div>
 		
 	<!----------------------------- LOGIN MODAL ------------------------------>

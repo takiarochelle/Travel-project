@@ -49,12 +49,6 @@ class Trip(db.Model):
                     creator {self.creator_id}, 
                     duration {self.start_date} - {self.end_date}>"""
 
-    @staticmethod
-    def convert_date_format(date):
-
-        month, day, year = date.split("/")
-        return datetime.date(int(year), int(month), int(day))
-
 
 
 class UserTrip(db.Model):

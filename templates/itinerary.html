@@ -4,11 +4,11 @@
 
 <div id="itinerary-body">
 
-    <nav class="navbar">
+    <nav class="navbar" id="itinerary-navbar">
         <span>
             <button onclick="redirectProfile()">Profile</button>
         </span>
-        <h3 class="logo">Tripster</h3>
+        <h3 class="logo" style="color: black;">Tripster</h3>
         <span>
             <button onclick="redirectLogout()">Logout</button>
         </span>
@@ -25,19 +25,23 @@
         </form>
     </div>
     <br>
-    <div class="container">  
-        <div class="row">
-    <!----------------------------- GOOGLE MAP ------------------------------->
-            <div id="map" class="col-12"></div>
-        </div>
-    </div>
-    <br>
 
-    <!---------------------------- LIST OF PLACES ---------------------------->
     <div class="container">
         <div class="row">
+            <div id="map" class="col-12"></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-6">
+                <h5>Spots to Visit</h5>
+            </div>
+            <div class="col-6">
+                <h5>Who's Going</h5>
+            </div>
+        </div>
+    <!---------------------------- LIST OF PLACES ---------------------------->
+        <div class="row">
             <div id="list-of-places-container" class="col-6">
-                <h5 style="text-align: center;">Spots to Visit</h5>
                 <ul class="list-of-places list-group list-group-flush">
                     {% for place in trip.places %}
                         <li class="places list-group-item" id="place-{{ place.place_id }}">
@@ -45,7 +49,7 @@
                             <div class="content" id="{{ place.place_id }}-comment-container">
                                 {% if place.comment %}
                                 <ul>
-                                    <li style="color: black;">{{ place.comment }}</li>
+                                    <li class="comment-list">{{ place.comment }}</li>
                                 </ul>
                                 {% else %}
                                 <p>
@@ -61,17 +65,10 @@
                     {% endfor %}
                 </ul>
                 <br>
-    <!---------------------- BUTTON TRIGGER PLACES MODAL --------------------->
-                {% if trip.places %}
-                    <button type="button" class="itinerary-button" data-toggle="modal" data-target="#delete-place-modal">
-                      Delete Place(s)
-                    </button>
-                {% endif %}
             </div>
 
     <!--------------------------- LIST OF FRIENDS ---------------------------->
             <div id="travel-friends" class="col-6" style="text-align: center;">
-                <h5>Who's Going</h5>
                 <span id="invited-friends" style="align-content: left;">
                 {% for buddy in trip.travel_buddies %}
                     {% if buddy.email != session.email %}
@@ -92,11 +89,21 @@
                 </span>
                 <br>
                 <br>
-                <span>
-                    <button type="button" class="itinerary-button" data-toggle="modal" data-target="#add-friends">
-                      Invite Friends
+            </div>
+        </div>
+        <br>
+        <div class="row" id="del-place-add-friend">
+            <div class="col-6">
+                {% if trip.places %}
+                    <button type="button" class="itinerary-button" data-toggle="modal" data-target="#delete-place-modal">
+                        Delete Place(s)
                     </button>
-                </span>
+                {% endif %}
+            </div>
+            <div class="col-6">
+                <button type="button" class="itinerary-button" data-toggle="modal" data-target="#add-friends">
+                    Invite Friends
+                </button>
             </div>
         </div>
     </div>

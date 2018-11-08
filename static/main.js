@@ -20,20 +20,20 @@ $('#save-removed-trips').on('click', deleteTrip);
 
 /*-------------------------- INSERT COMMENT -------------------------*/
 
-var placeNameId = $('.place-form').attr('action');
-var placeId = parseInt(placeNameId.split(/[/.]/)[2]);
+    var placeNameId = $('.place-form').attr('action');
+    var placeId = parseInt(placeNameId.split(/[/.]/)[2]);
 
-function showComment(result) {
-    $(`#${placeId}-comment-container`).html(`<ul><li style="color: black;">${result.comment}</li></ul>`);
-}
+    function showComment(result) {
+        $(`#${placeId}-comment-container`).html(`<ul><li class="comment-list">${result.comment}</li></ul>`);
+    }
 
-function getComment(evt) {
-    evt.preventDefault();
-    var formData = {'place-comment': $(`#${placeId}-comment`).val()};
-    $.post(`/add-comment/${placeId}.json`, formData, showComment);
-}
+    function getComment(evt) {
+        evt.preventDefault();
+        var formData = {'place-comment': $(`#${placeId}-comment`).val()};
+        $.post(`/add-comment/${placeId}.json`, formData, showComment);
+    }
 
-$(`#${placeId}-button`).on('click', getComment);
+    $(`#${placeId}-button`).on('click', getComment);
 
 /*------------------------- OPEN COLLAPSIBLE ------------------------*/
 
