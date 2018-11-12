@@ -37,7 +37,7 @@ ptyprocess==0.5.2
 Pygments==2.2.0
 pygobject==3.30.0
 pyparsing==2.2.0
-python-apt==1.1.0b1+ubuntu0.16.4.1
+python-apt==1.1.0b1+ubuntu0.7.8
 python-dateutil==2.7.3
 python-debian==0.1.27
 python-systemd==231
