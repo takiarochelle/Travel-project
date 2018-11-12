@@ -34,7 +34,6 @@ pickleshare==0.7.4
 prompt-toolkit==1.0.15
 psycopg2==2.7
 ptyprocess==0.5.2
-pycurl==7.43.0
 Pygments==2.2.0
 pygobject==3.20.0
 pyparsing==2.2.0
