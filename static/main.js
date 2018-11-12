@@ -1,23 +1,5 @@
 'use strict';
 
-/*-------------------------- DELETE TRIP ----------------------------*/
-
-function confirmTripDelete(result) {
-    $(`#${result.trip_id}-trip`).remove();
-}
-
-function deleteTrip() {
-    $('input[type=checkbox]').each(function() {
-        if (this.checked) {
-            let formData = {"trip_id": $(this).attr('id')};
-            console.log(formData);
-            $.post('/delete-trip.json', formData, confirmTripDelete);
-        }
-    });
-}
-
-$('#save-removed-trips').on('click', deleteTrip);
-
 /*-------------------------- INSERT COMMENT -------------------------*/
 
     var placeNameId = $('.place-form').attr('action');
