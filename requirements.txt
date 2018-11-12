@@ -38,7 +38,7 @@ Pygments==2.2.0
 pygobject==3.30.0
 pyparsing==2.2.0
 python-dateutil==2.7.3
-python-debian==0.1.27
+python-debian==0.1.33
 python-systemd==231
 python-twitter==3.4.2
 pyzmq==17.0.0
