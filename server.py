@@ -243,9 +243,9 @@ if __name__ == "__main__":
 
     connect_to_db(app, 'trips')
 
-    # db.create_all()
+    db.create_all()
 
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
-    app.run()
+    app.run(host='0.0.0.0')
 
