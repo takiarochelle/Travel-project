@@ -238,10 +238,12 @@ def logout():
     return render_template('index.html')
 
 
+connect_to_db(app, 'trips')
+
 if __name__ == "__main__":
     app.debug = True
 
-    connect_to_db(app, 'trips')
+    # connect_to_db(app, 'trips')
 
     db.create_all()
 

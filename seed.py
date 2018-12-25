@@ -10,12 +10,14 @@ def load_users():
 
     for row in open("seed_data/u.user"):
         row = row.rstrip()
-        user_id, fname, lname, email, password = row.split("|")
+        user_id, fname, lname, username, email, password, image_file = row.split("|")
 
         user = User(fname=fname,
                     lname=lname,
+                    username=username,
                     email=email,
-                    password=password)
+                    password=password,
+                    image_file=image_file)
 
         db.session.add(user)
 
@@ -84,7 +86,7 @@ def del_data_in_tables():
 
 
 if __name__ == "__main__":
-    connect_to_db(app, 'trips')
+    connect_to_db(app, 'testdb')
 
     # In case tables haven't been created, create them
     db.create_all()

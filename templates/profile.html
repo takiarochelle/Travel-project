@@ -13,6 +13,7 @@
             </span>
         </nav>
         <br>
+
     <!----------------------------- PROFILE IMAGE ---------------------------->
         <div class="container" id="profile-container">
             <h1 style="color: white; text-align: left;">Welcome, {{ user.fname }}</h1>
@@ -67,7 +68,6 @@
             </div>
         </div>
     </div>
-    <div class="footer"></div>
 
     <!------------------------ ADD PROFILE PHOTO MODAL ----------------------->
     <div class="modal fade" id="profile-photo-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -80,7 +80,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <form id="upload-image" enctype="multipart/form-data" action="/my_submit" method="post">
+            <form action="/my_submit" id="upload-image" enctype="multipart/form-data" method="post">
                 <br>
                 <span>
                     <input type="file" name="my_photo" accept="image/*">
