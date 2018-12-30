@@ -54,9 +54,11 @@ def validate_new_user():
 
     if email != confirm_email or password != confirm_password:
         flash('Email or password do not match')
+        return "Couldn't register. Please try again."
 
     elif user_by_email or user_by_username:
         flash('Email or username is already taken')
+        return "Couldn't register. Please try again."
 
     else:
         flash('Successfully registered!')
@@ -238,12 +240,10 @@ def logout():
     return render_template('index.html')
 
 
-connect_to_db(app, 'trips')
-
 if __name__ == "__main__":
     app.debug = True
 
-    # connect_to_db(app, 'trips')
+    connect_to_db(app, 'trips')
 
     db.create_all()
 
